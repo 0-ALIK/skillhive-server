@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Usuario } from "./usuario.entity";
 
 @Entity()
@@ -29,6 +29,7 @@ export class Freelancer {
 
     // Relacion 1:1 con Usuario
     @OneToOne(() => Usuario, usuario => usuario.freelancer, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+    @JoinColumn()
     @Unique(['usuario'])
     usuario: Usuario;
 }

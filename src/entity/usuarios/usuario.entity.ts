@@ -8,6 +8,9 @@ import { Like } from "../publicaciones/like.entity";
 import { Comentario } from "../publicaciones/comentario.entity";
 import { Ganancia } from "../activos/ganancia.enitity";
 import { Pago } from "../activos/pago.entity";
+import { Seccion } from "../secciones/seccion.entity";
+import { Comision } from "../comisiones/comision.entity";
+import { ComisionSolicitud } from "../comisiones/comision_solicitud.entity";
 
 enum TipoUsuario {
     ADMINISTRADOR = 'ADMINISTRADOR',
@@ -93,4 +96,16 @@ export class Usuario {
     // Relacion 1:N con Pago
     @OneToMany(() => Pago, pago => pago.usuario)
     pagos: Pago[];
+
+    // Relacion 1:N con Seccion
+    @OneToMany(() => Seccion, seccion => seccion.usuario)
+    secciones: Seccion[];
+    
+    // Relacion 1:N con Comision
+    @OneToMany(() => Comision, comision => comision.usuario)
+    comisiones: Comision[];
+
+    // Relacion 1:N con Comision_solicitud (Solicitadas)
+    @OneToMany(()=> ComisionSolicitud, comisionSolicitud => comisionSolicitud.usuario)
+    comisionesSolicitadas: ComisionSolicitud[];
 }
