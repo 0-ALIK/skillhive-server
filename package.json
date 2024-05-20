@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "typeorm": "typeorm-ts-node-commonjs"
   },
   "author": "Alik",
   "license": "ISC",
