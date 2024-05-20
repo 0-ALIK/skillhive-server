@@ -1,21 +1,9 @@
-/*
-Proyectos_seccion
-id (pk autoincremental)
-seccion_id
-nombre
-descripcion
-imagen
-enlace
-fecha_inicio
-fecha_fin
-created_at
-updated_at
-*/
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Seccion } from "./seccion.entity";
 
 @Entity('proyectos_seccion')
-export class ProyectosSeccion {
+export class ProyectosSeccion extends BaseEntity {
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -37,10 +25,10 @@ export class ProyectosSeccion {
     @Column({nullable: false})
     fecha_fin: Date;
 
-    @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion M:1 con Seccion

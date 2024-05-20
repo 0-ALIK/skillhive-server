@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Freelancer } from "./freelancer.entity";
 import { Empresa } from "./empresa.entity";
 import { Subespecialidad } from "../especialidades/subespecialidad.entity";
@@ -6,20 +6,21 @@ import { Seguidores } from "./seguidores.entity";
 import { Publicacion } from "../publicaciones/publicacion.entity";
 import { Like } from "../publicaciones/like.entity";
 import { Comentario } from "../publicaciones/comentario.entity";
-import { Ganancia } from "../activos/ganancia.enitity";
-import { Pago } from "../activos/pago.entity";
+import { Ganancia } from "../transacciones/ganancia.entity";
+import { Pago } from "../transacciones/pago.entity";
 import { Seccion } from "../secciones/seccion.entity";
 import { Comision } from "../comisiones/comision.entity";
 import { ComisionSolicitud } from "../comisiones/comision_solicitud.entity";
+import { EmpleoPostulante } from "../publicaciones/empleo_postulante.entity";
 
-enum TipoUsuario {
+export enum TipoUsuario {
     ADMINISTRADOR = 'ADMINISTRADOR',
     FREELANCER = 'FREELANCER',
     EMPRESA = 'EMPRESA'
 }
 
 @Entity()
-export class Usuario {
+export class Usuario extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -29,7 +30,7 @@ export class Usuario {
     @Column({nullable: false, select: false})
     password: string;
 
-    @Column({nullable: false})
+    @Column({nullable: false, length: 100})
     nombre: string;
 
     @Column()
@@ -48,12 +49,12 @@ export class Usuario {
     telefono: string;
 
     @Column({ type: 'enum', enum: TipoUsuario, default: TipoUsuario.FREELANCER, nullable: false})
-    tipo: string;
+    tipo: TipoUsuario;
 
-    @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+    @CreateDateColumn({ type: 'timestamp'})
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+    @UpdateDateColumn({ type: 'timestamp'})
     updatedAt: Date;
 
     // Relacion 1:1 con Freelancer
@@ -108,4 +109,8 @@ export class Usuario {
     // Relacion 1:N con Comision_solicitud (Solicitadas)
     @OneToMany(()=> ComisionSolicitud, comisionSolicitud => comisionSolicitud.usuario)
     comisionesSolicitadas: ComisionSolicitud[];
+
+    // Relacion 1:N con EmpleoPostulante
+    @OneToMany(() => EmpleoPostulante, empleoPostulante => empleoPostulante.usuario)
+    empleosPostulados: EmpleoPostulante[];
 }

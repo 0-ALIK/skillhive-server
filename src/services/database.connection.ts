@@ -1,6 +1,4 @@
 import { DataSource } from "typeorm";
-import { Usuario } from "../entity/usuarios/usuario.entity";
-import { Freelancer } from "../entity/usuarios/freelancer.entity";
 
 export class DatabaseConnectionService {
     
@@ -14,12 +12,9 @@ export class DatabaseConnectionService {
                 username: process.env.DB_USER || 'root',
                 password: process.env.DB_PASS || '',
                 database: process.env.DB_NAME || 'skillhive-dev',
-                synchronize: true,
                 logging: process.env.DB_LOGS === 'true' ? true : false,
-                entities: [
-                    Usuario,
-                    Freelancer
-                ]   
+                
+                entities: ['src/entity/**/*.entity.ts']   
             });
     
             await dataSource.initialize();

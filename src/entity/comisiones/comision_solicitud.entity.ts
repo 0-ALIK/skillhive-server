@@ -1,23 +1,23 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../usuarios/usuario.entity";
 import { Comision } from "./comision.entity";
-import { Pago } from "../activos/pago.entity";
-import { Ganancia } from "../activos/ganancia.enitity";
+import { Pago } from "../transacciones/pago.entity";
+import { Ganancia } from "../transacciones/ganancia.entity";
 import { ComisionSolicitudEstado } from "./comision_solicitud_estado.entity";
 import { ComisionSolicitudEntregables } from "./comision_solicitud_entregables.entity";
 
 @Entity()
-export class ComisionSolicitud {
+export class ComisionSolicitud extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @Column({nullable: false})
+    @Column({nullable: false, type: 'text'})
     descripcion: string;
 
-    @CreateDateColumn({type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion N:1 con comision

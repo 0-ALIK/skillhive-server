@@ -1,20 +1,20 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../usuarios/usuario.entity";
 import { Publicacion } from "./publicacion.entity";
 
 @Entity()
-export class Comentario {
+export class Comentario extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({nullable: false})
+    @Column({nullable: false, length: 150})
     comentario: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date; 
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion M:1 con Usuario

@@ -1,19 +1,19 @@
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Publicacion } from "./publicacion.entity";
 
 @Entity('tipo_publicacion')
-export class TipoPublicacion {
+export class TipoPublicacion extends BaseEntity {
 
-    @PrimaryColumn()
+    @PrimaryColumn({length: '3'})
     id: string;
 
-    @Column()
+    @Column({nullable: false, length: '20'})
     tipo: string;
 
-    @Column({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @Column({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion 1:M con Publicacion

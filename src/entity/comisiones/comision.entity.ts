@@ -1,42 +1,31 @@
-/*
-Comision
-id (pk)
-usuario_id
-titulo
-descripción
-precio
-imagen
-created_at
-updated_at
-*/
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../usuarios/usuario.entity";
 import { Subcategoria } from "../categorias/subcategoria.entity";
 import { ComisionImagenesEjemplo } from "./comision_imagenes_ejemplo.entity";
 import { ComisionSolicitud } from "./comision_solicitud.entity";
 
 @Entity()
-export class Comision {
+export class Comision extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({nullable: false})
+    @Column({nullable: false, length: '100'})
     titulo: string;
 
     @Column({nullable: false, type: 'text'})
     descripcion: string;
 
-    @Column({nullable: false})
+    @Column({nullable: false, type: 'decimal', precision: 10, scale: 2})
     precio: number;
 
     @Column({nullable: false})
     imagen: string;
 
-    @CreateDateColumn({type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion N:1 con Usuario

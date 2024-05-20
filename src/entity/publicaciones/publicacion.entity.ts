@@ -1,25 +1,34 @@
 import { create } from "domain";
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../usuarios/usuario.entity";
 import { Like } from "./like.entity";
 import { Comentario } from "./comentario.entity";
 import { TipoPublicacion } from "./tipo_publicacion.entity";
 import { Subcategoria } from "../categorias/subcategoria.entity";
 import { Subespecialidad } from "../especialidades/subespecialidad.entity";
+import { OfertaEmpleo } from "./oferta_empleo.entity";
+import { Articulo } from "./articulo.entity";
+import { Archivo } from "./archivo.entity";
 
 @Entity()
-export class Publicacion {
+export class Publicacion extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({nullable: false})
+    @Column({nullable: false, length: 100})
     titulo: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @Column({nullable: false, type: 'text'})
+    descripcion_corta: string;
+
+    @Column({nullable: false, type: 'boolean', default: false})
+    publicado: boolean;
+
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
     
     // Relacion M:1 con Usuario
@@ -47,4 +56,16 @@ export class Publicacion {
     @ManyToMany(() => Subespecialidad, subespecialidad => subespecialidad.publicaciones)
     @JoinTable({name: 'publicacion_subespecialidad'})
     subespecialidades: Subespecialidad[];
+
+    // Relacion 1:1 con OfertaEmpleo
+    @OneToOne(() => OfertaEmpleo, ofertaEmpleo => ofertaEmpleo.publicacion)
+    ofertaEmpleo: OfertaEmpleo;
+
+    // Relacion 1:1 con Articulo
+    @OneToOne(() => Articulo, articulo => articulo.publicacion)
+    articulo: Articulo;
+
+    // Relacion 1:1 con Archivo
+    @OneToOne(() => Archivo, archivo => archivo.publicacion)
+    archivo: Archivo;
 }

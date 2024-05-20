@@ -1,14 +1,14 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany} from 'typeorm';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, BaseEntity} from 'typeorm';
 import { Especialidad } from './especialidad.entity';
 import { Usuario } from '../usuarios/usuario.entity';
 import { Publicacion } from '../publicaciones/publicacion.entity';
 
 @Entity()
-export class Subespecialidad {
+export class Subespecialidad extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({length: 100, nullable: false}) 
+    @Column({length: 50, nullable: false}) 
     nombre: string;
 
     @CreateDateColumn()

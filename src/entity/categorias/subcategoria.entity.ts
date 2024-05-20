@@ -1,10 +1,10 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Categoria } from "./categoria.entity";
 import { Publicacion } from "../publicaciones/publicacion.entity";
 import { Comision } from "../comisiones/comision.entity";
 
 @Entity()
-export class Subcategoria {
+export class Subcategoria extends BaseEntity {
     
     @PrimaryGeneratedColumn()
     id: number;
@@ -12,10 +12,10 @@ export class Subcategoria {
     @Column({nullable: false, length: 50})
     nombre: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion M:1 con Categoria

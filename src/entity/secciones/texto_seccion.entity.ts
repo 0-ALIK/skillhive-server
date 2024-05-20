@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Seccion } from "./seccion.entity";
 
 @Entity('texto_seccion')
-export class TextoSeccion {
+export class TextoSeccion extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -10,10 +10,10 @@ export class TextoSeccion {
     @Column({nullable: false, type: 'text'})
     texto: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
-
-    @UpdateDateColumn({ type: 'timestamp'})
+    
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion 1:1 con Seccion

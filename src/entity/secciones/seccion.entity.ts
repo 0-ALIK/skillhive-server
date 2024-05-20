@@ -1,12 +1,12 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { TipoSeccion } from "./tipo_seccion.entity";
 import { TextoSeccion } from "./texto_seccion.entity";
 import { ProyectosSeccion } from "./proyectos_seccion.entity";
-import { ArchivosSeccion } from "./archivos_seccion";
+import { ArchivosSeccion } from "./archivos_seccion.entity";
 import { Usuario } from "../usuarios/usuario.entity";
 
 @Entity()
-export class Seccion {
+export class Seccion extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -17,10 +17,10 @@ export class Seccion {
     @Column({nullable: false, length: 50})
     titulo: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion M:1 con TipoSeccion

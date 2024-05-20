@@ -1,18 +1,18 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany, BaseEntity } from 'typeorm';
 import { Subespecialidad } from './subespecialidad.entity';
 
 @Entity()
-export class Especialidad {
+export class Especialidad extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({length: 100, nullable: false}) 
+    @Column({length: 50, nullable: false}) 
     nombre: string;
 
-    @CreateDateColumn({type: 'timestamp', name: 'created_at'})
+    @CreateDateColumn()
     created_at: Date;
 
-    @UpdateDateColumn({type: 'timestamp', name: 'updated_at'})
+    @UpdateDateColumn()
     updated_at: Date;
 
     // Relacion 1:N con Subespecialidad

@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ComisionSolicitud } from "./comision_solicitud.entity";
 
 @Entity()
-export class ComisionSolicitudEntregables {
+export class ComisionSolicitudEntregables extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -10,10 +10,10 @@ export class ComisionSolicitudEntregables {
     @Column({nullable: false})
     archivo: string;
 
-    @CreateDateColumn({type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // relacion N:1 con ComisionSolicitud

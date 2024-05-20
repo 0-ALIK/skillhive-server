@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Comision } from "./comision.entity";
 
 @Entity('comision_imagenes_ejemplo')
-export class ComisionImagenesEjemplo {
+export class ComisionImagenesEjemplo extends BaseEntity {
     
     @PrimaryGeneratedColumn()
     id: number;
@@ -10,10 +10,10 @@ export class ComisionImagenesEjemplo {
     @Column({nullable: false})
     imagen: string;
 
-    @CreateDateColumn({type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion N:1 con Comision

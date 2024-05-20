@@ -1,19 +1,19 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ComisionSolicitud } from "./comision_solicitud.entity";
 
 @Entity()
-export class ComisionSolicitudEstado {
+export class ComisionSolicitudEstado extends BaseEntity {
     
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryColumn({length: '3'})
+    id: string;
 
-    @Column({nullable: false})
+    @Column({nullable: false, length: '20'})
     estado: string;
-
-    @CreateDateColumn({type: 'timestamp'})
+    
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion 1:N con ComisionSolicitud

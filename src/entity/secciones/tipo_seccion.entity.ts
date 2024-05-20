@@ -1,19 +1,19 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { Seccion } from "./seccion.entity";
 
 @Entity('tipo_seccion')
-export class TipoSeccion {
+export class TipoSeccion extends BaseEntity {
 
-    @PrimaryColumn()
+    @PrimaryColumn({length: '3'})
     id: string;
 
-    @Column({nullable: false, length: 50})
+    @Column({nullable: false, length: 20})
     nombre: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion 1:M con Seccion

@@ -1,20 +1,20 @@
-import { Column, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { Pago } from "./pago.entity";
-import { Ganancia } from "./ganancia.enitity";
+import { Ganancia } from "./ganancia.entity";
 
 @Entity('tipo_transaccion')
-export class TipoTransaccion {
+export class TipoTransaccion extends BaseEntity {
 
-    @PrimaryColumn()
+    @PrimaryColumn({length: '3'})
     id: string;
 
-    @Column({nullable: false})
+    @Column({nullable: false, length: '20'})
     tipo: string;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion 1:M con Pago

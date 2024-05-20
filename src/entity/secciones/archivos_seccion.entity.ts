@@ -1,18 +1,19 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Seccion } from "./seccion.entity";
 
 @Entity('archivos_seccion')
-export class ArchivosSeccion {
+export class ArchivosSeccion extends BaseEntity {
+
     @PrimaryGeneratedColumn()
     id: number;
     
     @Column({nullable: false})
     archivo: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn()
     updatedAt: Date;
 
     // Relacion M:1 con Seccion

@@ -1,9 +1,9 @@
 import { BaseEntity, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../usuarios/usuario.entity";
-import { Publicacion } from "./publicacion.entity";
+import { OfertaEmpleo } from "./oferta_empleo.entity";
 
-@Entity()
-export class Like extends BaseEntity {
+@Entity('empleo_postulante')
+export class EmpleoPostulante extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -15,11 +15,10 @@ export class Like extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.likes)
+    @ManyToOne(() => Usuario, usuario => usuario.empleosPostulados)
     usuario: Usuario;
 
-    // Relacion M:1 con Publicacion
-    @ManyToOne(() => Publicacion, publicacion => publicacion.likes)
-    publicacion: Publicacion;
-    
+    // Relacion M:1 con OfertaEmpleo
+    @ManyToOne(() => OfertaEmpleo, ofertaEmpleo => ofertaEmpleo.postulantes)
+    ofertaEmpleo: OfertaEmpleo;
 }
