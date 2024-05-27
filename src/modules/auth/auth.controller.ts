@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { JWTService } from '../../services/jwt';
 
 export class AuthController { 
 
@@ -6,6 +7,7 @@ export class AuthController {
     public constructor() {}
 
     public async login(req: Request, res: Response) {
+        
         res.json({ message: 'Login' });
     }
 }

@@ -13,6 +13,9 @@ SkillHive es una plataforma para freelancers y empresas que buscan contratar tal
 PORT=3000
 HOST=localhost
 
+# jwt
+JWT_SECRET=seed
+
 # mails
 MAIL_SERVICE=gmail
 MAIL_HOST=smtp.gmail.com

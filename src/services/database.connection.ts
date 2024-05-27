@@ -14,7 +14,7 @@ export class DatabaseConnectionService {
                     password: process.env.DB_PASS || '',
                     database: process.env.DB_NAME || 'skillhive-dev',
                     logging: process.env.DB_LOGS === 'true' ? true : false,
-                    entities: ['src/entities/**/*.ts'],
+                    entities: ['src/entity/**/*.ts'],
                     migrations: ['src/migrations/**/*.ts'],
                     migrationsTableName: "_migration_table",
                     pool: {
