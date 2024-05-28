@@ -1,3 +1,8 @@
+/**
+ * Este script se encarga de realizar una conexión temporal a la base de datos para poder ejecutar las migraciones.
+ * No es el script que se encarga de la conexión a la base de datos en tiempo de ejecución.
+ */
+
 import 'reflect-metadata';
 import 'dotenv/config';
 

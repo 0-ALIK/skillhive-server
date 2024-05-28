@@ -3,6 +3,13 @@ import { DataSource } from 'typeorm';
 export class DatabaseConnectionService {
     private static dataSource: DataSource;
 
+    public static get connection(): DataSource {
+        if (!DatabaseConnectionService.dataSource) {
+            throw new Error('Database connection not established');
+        }
+        return DatabaseConnectionService.dataSource;
+    }
+
     public static async databaseConnection(): Promise<DataSource> {
         try {
             if (!DatabaseConnectionService.dataSource) {

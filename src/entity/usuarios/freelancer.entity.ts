@@ -15,9 +15,6 @@ export class Freelancer extends BaseEntity {
     @Column({nullable: false})
     fecha_nacimiento: Date;
 
-    @Column()
-    fondo: string;
-
     @Column({nullable: false, default: false})
     open_comissions: boolean;
     
