@@ -129,3 +129,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Migration file
+./src/migrations/*.ts
+src/migrations/*.ts

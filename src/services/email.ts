@@ -1,4 +1,7 @@
 import { createTransport } from 'nodemailer';
+import path from 'path';
+import fs from 'fs';
+import handlebars from 'handlebars';
 
 interface EmailOptions {
     to: string;
@@ -12,12 +15,18 @@ interface Attachment {
     path: string;
 }
 
+interface ConfirmarCorreoData {
+    nombre: string;
+    apellido?: string;
+    codigo: string;
+}
+
 /**
  * Email service
  */
 export class EmailService {
 
-    private transporter = createTransport({
+    private static transporter = createTransport({
         service: process.env.MAIL_SERVICE,
         port: Number(process.env.MAIL_PORT),
         host: process.env.MAIL_HOST,
@@ -32,12 +41,12 @@ export class EmailService {
      * @param options EmailOptions
      * @returns Promise<boolean>
      */
-    public async sendEmail(options: EmailOptions): Promise<boolean> {
+    public static async sendEmail(options: EmailOptions): Promise<boolean> {
         try {
 
             const { to, subject, html, attachements = [] } = options;
 
-            const sendInformation = await this.transporter.sendMail({
+            await this.transporter.sendMail({
                 to: to,
                 subject: subject,
                 html: html,
@@ -52,5 +61,24 @@ export class EmailService {
         }
     }
 
+    public static async sendConfirmarCorreo(to: string, subject: string, replacements: ConfirmarCorreoData) {
+        const email = fs.readFileSync(path.join(__dirname, '../emails/confirmar-correo.hbs'), 'utf-8');
+        const template = handlebars.compile(email);
+
+        try {
+            
+            await this.sendEmail({
+                to: to,
+                subject: subject,
+                html: template(replacements)
+            });
+
+            return true;
+
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
     
 }

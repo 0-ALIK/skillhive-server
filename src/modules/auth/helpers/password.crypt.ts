@@ -25,4 +25,12 @@ export class PasswordCrypt {
     public static comparePassword(password: string, hash: string): boolean {
         return compareSync(password, hash);
     }
+
+    /**
+     * Este metodo genera un codigo de verificacion de 6 digitos
+     * @returns El codigo de verificacion
+     */
+    public static generarCodigoVerificacion6Digits(): string {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+    }
 }

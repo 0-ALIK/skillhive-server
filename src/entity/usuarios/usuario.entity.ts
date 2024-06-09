@@ -27,7 +27,7 @@ export class Usuario extends BaseEntity {
     @Column({unique: true, nullable: false})
     correo: string;
 
-    @Column({nullable: false, select: false})
+    @Column({nullable: false})
     password: string;
 
     @Column({nullable: false, length: 100})
@@ -47,6 +47,12 @@ export class Usuario extends BaseEntity {
 
     @Column({length: 20})
     telefono: string;
+
+    @Column({default: false, nullable: false})
+    confirmado: boolean;
+
+    @Column({nullable: true})
+    codigoVerificacion: string;
 
     @Column({ type: 'enum', enum: TipoUsuario, default: TipoUsuario.FREELANCER, nullable: false})
     tipo: TipoUsuario;

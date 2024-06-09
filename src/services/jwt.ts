@@ -13,11 +13,11 @@ export class JWTService {
      * @param duration 
      * @returns el token generado
      */
-    public static generarToken( payload: any, duration: string = '24h') {        
-        return new Promise((resolve) => {
+    public static generarToken( payload: any, duration: string = '24h'): Promise<string|undefined> {        
+        return new Promise<string|undefined>((resolve) => {
             sign(payload, jwt_secret, { expiresIn: duration}, (err, token) => {
                 if (err) {
-                    resolve(null);
+                    resolve(undefined);
                 } 
 
                 resolve(token);

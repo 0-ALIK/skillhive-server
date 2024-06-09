@@ -32,6 +32,15 @@ DB_PASS=
 DB_NAME=skillhive
 DB_PORT=3306
 DB_LOGS=true
+
+# cloudinary
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+# paypal
+PAYPAL_CLIENT_ID=
+PAYPAL_CLIENT_SECRET=
 ```
 
 4. Crear una base de datos en MySQL con el nombre `skillhive`.
