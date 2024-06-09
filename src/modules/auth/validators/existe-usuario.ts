@@ -12,11 +12,7 @@ import { DatabaseConnectionService } from "../../../services/database-connection
 export const existeFreelancerByCedula: CustomValidator = async (cedula: string): Promise<boolean> => {
     const dataSource = DatabaseConnectionService.connection;
     
-    const freelancer = await dataSource.getRepository(Freelancer).findOne({
-        where: {
-            cedula: cedula
-        }
-    });
+    const freelancer = await dataSource.getRepository(Freelancer).findOneBy({cedula});
 
     if (freelancer) {
         throw new Error('Existe el freelancer con la cédula '+cedula);
@@ -33,11 +29,7 @@ export const existeFreelancerByCedula: CustomValidator = async (cedula: string):
 export const existeUsuarioByEmail: CustomValidator = async (correo: string): Promise<boolean> => {
     const dataSource = DatabaseConnectionService.connection;
 
-    const usuario = await dataSource.getRepository(Usuario).findOne({
-        where: {
-            correo
-        }
-    });
+    const usuario = await dataSource.getRepository(Usuario).findOneBy({correo});
     
     if (usuario) {
         throw new Error('Existe el usuario con el correo '+correo);
@@ -49,11 +41,7 @@ export const existeUsuarioByEmail: CustomValidator = async (correo: string): Pro
 export const existeEmpresaByRUC: CustomValidator = async (ruc: string): Promise<boolean> => {
     const dataSource = DatabaseConnectionService.connection;
     
-    const empresa = await dataSource.getRepository(Empresa).findOne({
-        where: {
-            ruc
-        }
-    });
+    const empresa = await dataSource.getRepository(Empresa).findOneBy({ruc});
 
     if (empresa) {
         throw new Error('Existe la empresa con el RUC '+ruc);
