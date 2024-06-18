@@ -2,6 +2,8 @@ import express from 'express';
 import { Routes } from './routes';
 import { DatabaseConnectionService } from './services/database-connection';
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
+import path from 'path';
 
 export class Server {
 
@@ -20,6 +22,8 @@ export class Server {
         this.healthCheck();
 
         this.globalMiddlewares();
+
+        this.public();
 
         this.app.listen(process.env.PORT || 3000, () => {
             console.log(`Server is running on port ${process.env.PORT} and host ${process.env.HOST}`);
@@ -46,6 +50,8 @@ export class Server {
      * Middlewares globales
      */
     private globalMiddlewares(): void {
+        // Middleware para habilitar CORS
+        this.app.use(cors());
         // Middleware para parsear el body de las peticiones
         this.app.use(express.json());
         // Middleware para subir archivos
@@ -56,6 +62,17 @@ export class Server {
         
         // Middleware para las rutas
         this.app.use(Routes.routes);
+    }
+
+    /**
+     * Rutas públicas
+     */
+    private public(): void {
+        this.app.use(express.static(path.join(__dirname, '../public')));
+
+        this.app.get('*', (req, res) => {
+            res.sendFile(path.join(__dirname, '../public/index.html'));
+        });
     }
 
 }
