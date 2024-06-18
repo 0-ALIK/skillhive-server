@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToOne, Prim
 import { Usuario } from "../usuarios/usuario.entity";
 import { TipoTransaccion } from "./tipo_transaccion.entity";
 import { ComisionSolicitud } from "../comisiones/comision_solicitud.entity";
+import { VentasCompras } from "../activos/ventas_compras";
 
 @Entity()
 export class Pago extends BaseEntity {
@@ -29,4 +30,8 @@ export class Pago extends BaseEntity {
     // relacion 1:1 con ComisionSolicitud
     @OneToOne(() => ComisionSolicitud, comisionSolicitud => comisionSolicitud.pago)
     comisionSolicitud: ComisionSolicitud;
+
+    // relacion 1:1 con VentasCompras
+    @OneToOne(() => VentasCompras, ventasCompras => ventasCompras.pago)
+    ventasCompras: VentasCompras;
 }

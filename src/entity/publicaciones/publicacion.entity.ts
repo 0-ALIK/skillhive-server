@@ -9,6 +9,7 @@ import { Subespecialidad } from "../especialidades/subespecialidad.entity";
 import { OfertaEmpleo } from "./oferta_empleo.entity";
 import { Articulo } from "./articulo.entity";
 import { Archivo } from "./archivo.entity";
+import { Activo } from "../activos/activos";
 
 @Entity()
 export class Publicacion extends BaseEntity {
@@ -68,4 +69,8 @@ export class Publicacion extends BaseEntity {
     // Relacion 1:1 con Archivo
     @OneToOne(() => Archivo, archivo => archivo.publicacion)
     archivo: Archivo;
+
+    // Relacion 1:1 con Activo
+    @OneToOne(() => Activo, activo => activo.publicacion)
+    activo: Activo;
 }

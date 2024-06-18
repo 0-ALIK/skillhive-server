@@ -12,6 +12,8 @@ import { Seccion } from "../secciones/seccion.entity";
 import { Comision } from "../comisiones/comision.entity";
 import { ComisionSolicitud } from "../comisiones/comision_solicitud.entity";
 import { EmpleoPostulante } from "../publicaciones/empleo_postulante.entity";
+import { Carrito } from "../activos/carrito";
+import { VentasCompras } from "../activos/ventas_compras";
 
 export enum TipoUsuario {
     ADMINISTRADOR = 'ADMINISTRADOR',
@@ -119,4 +121,12 @@ export class Usuario extends BaseEntity {
     // Relacion 1:N con EmpleoPostulante
     @OneToMany(() => EmpleoPostulante, empleoPostulante => empleoPostulante.usuario)
     empleosPostulados: EmpleoPostulante[];
+
+    // Relacion 1:N con carrito
+    @OneToMany(() => Carrito, carrito => carrito.usuario)
+    carritos: Carrito[];
+
+    // Relacion 1:N con ventasCompras
+    @OneToMany(() => VentasCompras, ventasCompras => ventasCompras.usuario)
+    ventasCompras: VentasCompras[];
 }
