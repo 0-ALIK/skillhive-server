@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { DataSource } from 'typeorm';
-import { DatabaseConnectionService } from '../../services/database-connection';
-import { TipoUsuario, Usuario } from '../../entity/usuarios/usuario.entity';
-import { PasswordCrypt } from './helpers/password.crypt';
-import { Freelancer } from '../../entity/usuarios/freelancer.entity';
-import { Empresa } from '../../entity/usuarios/empresa.entity';
-import { JWTService } from '../../services/jwt';
-import { EmailService } from '../../services/email';
-import { formatUsuarioEmpresa, formatUsuarioFreelancer } from './helpers/format-usuario';
+import { DatabaseConnectionService } from '../../../services/database-connection';
+import { TipoUsuario, Usuario } from '../../../entity/usuarios/usuario.entity';
+import { PasswordCrypt } from '../helpers/password.crypt';
+import { Freelancer } from '../../../entity/usuarios/freelancer.entity';
+import { Empresa } from '../../../entity/usuarios/empresa.entity';
+import { JWTService } from '../../../services/jwt';
+import { EmailService } from '../../../services/email';
+import { formatUsuarioEmpresa, formatUsuarioFreelancer } from '../helpers/format-usuario';
 
 export class AuthController { 
 

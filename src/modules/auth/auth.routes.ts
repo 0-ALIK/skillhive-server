@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AuthController } from "./auth.controller";
+import { AuthController } from "./controllers/auth.controller";
 import { check } from "express-validator";
 import { mostrarErrores } from "../../middlewares/mostrar-errores";
 import { existeEmpresaByRUC, existeFreelancerByCedula, existeUsuarioByEmail } from "./validators/existe-usuario";

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { VentasComprasActivosController } from './ventas-compras-activos.controller';
+import { VentasComprasActivosController } from './controllers/ventas-compras-activos.controller';
 
 export class VentasComprasActivosRoutes {
 
