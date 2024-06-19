@@ -38,6 +38,11 @@ export const existeUsuarioByEmail: CustomValidator = async (correo: string): Pro
     return true;
 }
 
+/**
+ * Verifica si existe un usuario con el RUC de empresa
+ * @param ruc RUC de la empresa
+ * @returns true si existe, false si no existe
+ */
 export const existeEmpresaByRUC: CustomValidator = async (ruc: string): Promise<boolean> => {
     const dataSource = DatabaseConnectionService.connection;
     

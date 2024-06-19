@@ -1,5 +1,4 @@
-import { create } from "domain";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn,  Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Usuario } from "../usuarios/usuario.entity";
 import { Like } from "./like.entity";
 import { Comentario } from "./comentario.entity";
@@ -23,6 +22,9 @@ export class Publicacion extends BaseEntity {
     @Column({nullable: false, type: 'text'})
     descripcion_corta: string;
 
+    @Column({nullable: false})
+    portada: string;
+
     @Column({nullable: false, type: 'boolean', default: false})
     publicado: boolean;
 
@@ -33,7 +35,7 @@ export class Publicacion extends BaseEntity {
     updatedAt: Date;
     
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.publicaciones)
+    @ManyToOne(() => Usuario, usuario => usuario.publicaciones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion 1:M con Like
@@ -45,7 +47,7 @@ export class Publicacion extends BaseEntity {
     comentarios: Comentario[];
 
     // Relacion M:1 con TipoPublicacion
-    @ManyToOne(() => TipoPublicacion, tipo => tipo.publicaciones)
+    @ManyToOne(() => TipoPublicacion, tipo => tipo.publicaciones, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     tipo: TipoPublicacion;
 
     // Relacion M:N con subcategorias

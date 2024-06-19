@@ -9,10 +9,7 @@ export class Articulo extends BaseEntity {
     
     @Column({nullable: false, type: 'longtext'})
     contenido: string;
-    
-    @Column({nullable: false})
-    portada: string;
-    
+  
     @CreateDateColumn()
     createdAt: Date;
 

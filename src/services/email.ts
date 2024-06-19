@@ -62,7 +62,7 @@ export class EmailService {
     }
 
     public static async sendConfirmarCorreo(to: string, subject: string, replacements: ConfirmarCorreoData) {
-        const email = fs.readFileSync(path.join(__dirname, '../emails/confirmar-correo.hbs'), 'utf-8');
+        const email = fs.readFileSync(path.join(__dirname, '../../emails/confirmar-correo.hbs'), 'utf-8');
         const template = handlebars.compile(email);
 
         try {

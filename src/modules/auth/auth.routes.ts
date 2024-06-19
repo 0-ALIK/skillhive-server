@@ -51,7 +51,7 @@ export class AuthRoutes {
         ], authController.registroEmpresa);
 
         router.get('/confirmar-correo/:codigo', [
-            validarSesion(),
+            validarSesion(null, false),
             check('codigo', 'El código de verificación es requerido').notEmpty(),
             mostrarErrores
         ], authController.confirmarCorreo);

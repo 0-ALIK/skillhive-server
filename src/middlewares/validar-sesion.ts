@@ -6,7 +6,7 @@ import { Freelancer } from "../entity/usuarios/freelancer.entity";
 import { Empresa } from "../entity/usuarios/empresa.entity";
 import { formatUsuario, formatUsuarioEmpresa, formatUsuarioFreelancer } from "../modules/auth/helpers/format-usuario";
 
-export function validarSesion(tipoUsuario: TipoUsuario | null = null) {
+export function validarSesion(tipoUsuario: TipoUsuario | null = null, validarConfirmacion: boolean = true) {
 
     return async (req: Request, res: Response, next: NextFunction) => {
         const token = req.header('x-token');
@@ -25,6 +25,10 @@ export function validarSesion(tipoUsuario: TipoUsuario | null = null) {
 
             if(!usuario) {
                 return res.status(401).json({msg: 'Usuario no encontrado'});
+            }
+
+            if(validarConfirmacion && !usuario.confirmado) {
+                return res.status(401).json({msg: 'Usuario no confirmado'});
             }
 
             if(tipoUsuario) {
