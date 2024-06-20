@@ -17,7 +17,7 @@ export class ComisionSolicitudEntregables extends BaseEntity {
     updatedAt: Date;
 
     // relacion N:1 con ComisionSolicitud
-    @ManyToOne(() => ComisionSolicitud, solicitud => solicitud.entregables)
+    @ManyToOne(() => ComisionSolicitud, solicitud => solicitud.entregables, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     solicitud: ComisionSolicitud;
 
 }   

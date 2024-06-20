@@ -15,10 +15,10 @@ export class EmpleoPostulante extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.empleosPostulados)
+    @ManyToOne(() => Usuario, usuario => usuario.empleosPostulados, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion M:1 con OfertaEmpleo
-    @ManyToOne(() => OfertaEmpleo, ofertaEmpleo => ofertaEmpleo.postulantes)
+    @ManyToOne(() => OfertaEmpleo, ofertaEmpleo => ofertaEmpleo.postulantes, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     ofertaEmpleo: OfertaEmpleo;
 }

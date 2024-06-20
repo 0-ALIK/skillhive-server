@@ -1,6 +1,12 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { Seccion } from "./seccion.entity";
 
+export enum TipoSeccionEnum {
+    PROYECTOS = 'PRO',
+    GALERIA = 'GAL',
+    TEXTO = 'TEX'
+};
+
 @Entity('tipo_seccion')
 export class TipoSeccion extends BaseEntity {
 

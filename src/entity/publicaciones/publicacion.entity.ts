@@ -51,12 +51,12 @@ export class Publicacion extends BaseEntity {
     tipo: TipoPublicacion;
 
     // Relacion M:N con subcategorias
-    @ManyToMany(() => Subcategoria, subcategoria => subcategoria.publicaciones)
+    @ManyToMany(() => Subcategoria, subcategoria => subcategoria.publicaciones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinTable({name: 'publicacion_subcategoria'})
     subcategorias: Subcategoria[];
 
     // Relacion M:N con subespecialidades
-    @ManyToMany(() => Subespecialidad, subespecialidad => subespecialidad.publicaciones)
+    @ManyToMany(() => Subespecialidad, subespecialidad => subespecialidad.publicaciones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinTable({name: 'publicacion_subespecialidad'})
     subespecialidades: Subespecialidad[];
 

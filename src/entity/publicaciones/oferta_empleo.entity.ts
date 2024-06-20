@@ -22,16 +22,16 @@ export class OfertaEmpleo extends BaseEntity {
     updatedAt: Date;
 
     // Relación 1:1 con Publicacion
-    @OneToOne(() => Publicacion, publicacion => publicacion.ofertaEmpleo)
+    @OneToOne(() => Publicacion, publicacion => publicacion.ofertaEmpleo, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn()
     publicacion: Publicacion;
 
     // Relacion M:1 con OfertaEmpleoTipo
-    @ManyToOne(() => OfertaEmpleoTipo, tipo => tipo.ofertasEmpleo)
+    @ManyToOne(() => OfertaEmpleoTipo, tipo => tipo.ofertasEmpleo, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     tipo: OfertaEmpleoTipo;
 
     // Relacion M:1 con OfertaEmpleoNivel
-    @ManyToOne(() => OfertaEmpleoNivel, nivel => nivel.ofertasEmpleo)
+    @ManyToOne(() => OfertaEmpleoNivel, nivel => nivel.ofertasEmpleo, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     nivel: OfertaEmpleoNivel;
 
     // Relacion 1:M con EmpleoPostulante

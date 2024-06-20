@@ -18,10 +18,10 @@ export class Comentario extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.comentarios)
+    @ManyToOne(() => Usuario, usuario => usuario.comentarios, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion M:1 con Publicacion
-    @ManyToOne(() => Publicacion, publicacion => publicacion.comentarios)
+    @ManyToOne(() => Publicacion, publicacion => publicacion.comentarios, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     publicacion: Publicacion;
 }

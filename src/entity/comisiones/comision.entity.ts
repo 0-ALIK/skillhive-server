@@ -29,12 +29,12 @@ export class Comision extends BaseEntity {
     updatedAt: Date;
 
     // Relacion N:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.comisiones)
+    @ManyToOne(() => Usuario, usuario => usuario.comisiones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion N:M con subcategoria
-    @ManyToMany(() => Subcategoria, subcategoria => subcategoria.comisiones)
-    @JoinTable({name: 'comision_subcategoria'})
+    @ManyToMany(() => Subcategoria, subcategoria => subcategoria.comisiones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    @JoinTable({ name: 'comision_subcategoria' })
     subcategorias: Subcategoria[];
 
     // Relacion 1:N con ComisionImagenesEjemplo

@@ -1,8 +1,8 @@
 import { CustomValidator } from "express-validator";
-import { DatabaseConnectionService } from "../../../services/database-connection";
-import { Subespecialidad } from "../../../entity/especialidades/subespecialidad.entity";
+import { DatabaseConnectionService } from "../services/database-connection";
+import { Subespecialidad } from "../entity/especialidades/subespecialidad.entity";
 import { In } from "typeorm";
-import { Subcategoria } from "../../../entity/categorias/subcategoria.entity";
+import { Subcategoria } from "../entity/categorias/subcategoria.entity";
 
 export const existenSubespecialidades: CustomValidator = async (subespecialidadesIds: number[]): Promise<boolean> => {
     const dataSource = DatabaseConnectionService.connection;

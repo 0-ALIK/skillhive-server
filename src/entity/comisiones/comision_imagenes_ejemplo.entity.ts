@@ -17,6 +17,6 @@ export class ComisionImagenesEjemplo extends BaseEntity {
     updatedAt: Date;
 
     // Relacion N:1 con Comision
-    @ManyToOne(() => Comision, comision => comision.imagenes)
+    @ManyToOne(() => Comision, comision => comision.imagenes, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     comision: Comision;
 }

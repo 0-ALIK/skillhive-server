@@ -24,7 +24,7 @@ export class Seccion extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con TipoSeccion
-    @ManyToOne(() => TipoSeccion, tipoSeccion => tipoSeccion.secciones)
+    @ManyToOne(() => TipoSeccion, tipoSeccion => tipoSeccion.secciones, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     tipoSeccion: TipoSeccion;
 
     // Relacion 1:1 con TextoSeccion
@@ -40,6 +40,6 @@ export class Seccion extends BaseEntity {
     archivosSeccion: ArchivosSeccion[];
 
     // Relacion M:1 con usuario
-    @ManyToOne(() => Usuario, usuario => usuario.secciones)
+    @ManyToOne(() => Usuario, usuario => usuario.secciones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 }

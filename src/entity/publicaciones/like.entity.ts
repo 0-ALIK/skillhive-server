@@ -15,11 +15,11 @@ export class Like extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.likes)
+    @ManyToOne(() => Usuario, usuario => usuario.likes, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion M:1 con Publicacion
-    @ManyToOne(() => Publicacion, publicacion => publicacion.likes)
+    @ManyToOne(() => Publicacion, publicacion => publicacion.likes, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     publicacion: Publicacion;
     
 }

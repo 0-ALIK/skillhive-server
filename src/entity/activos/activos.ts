@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, On
 import { Publicacion } from "../publicaciones/publicacion.entity";
 import { Carrito } from "./carrito";
 import { VentasCompras } from "./ventas_compras";
+import { ActivoArchivos } from "./activos_archivos";
 
 @Entity()
 export class Activo extends BaseEntity {
@@ -22,7 +23,7 @@ export class Activo extends BaseEntity {
     updatedAt: Date;
 
     // Relacion 1:1 con Publicacion
-    @OneToOne(() => Publicacion, publicacion => publicacion.activo)
+    @OneToOne(() => Publicacion, publicacion => publicacion.activo, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn()
     publicacion: Publicacion;
 
@@ -33,4 +34,8 @@ export class Activo extends BaseEntity {
     // Relacion 1:M con VentasCompras
     @OneToMany(() => VentasCompras, ventasCompras => ventasCompras.activo)
     ventasCompras: VentasCompras[];
+
+    // Relacion 1:M con ActivoArchivos
+    @OneToMany(() => ActivoArchivos, activoArchivos => activoArchivos.activo)
+    archivos: ActivoArchivos[];
 }

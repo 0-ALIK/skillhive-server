@@ -20,11 +20,11 @@ export class Pago extends BaseEntity {
     updatedAt: Date;
     
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.ganancias)
+    @ManyToOne(() => Usuario, usuario => usuario.ganancias, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;   
 
     // Relacion M:1 con TipoTransaccion
-    @ManyToOne(() => TipoTransaccion, tipo => tipo.pagos)
+    @ManyToOne(() => TipoTransaccion, tipo => tipo.pagos, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     tipo: TipoTransaccion;
 
     // relacion 1:1 con ComisionSolicitud

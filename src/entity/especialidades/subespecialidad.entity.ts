@@ -12,13 +12,13 @@ export class Subespecialidad extends BaseEntity {
     nombre: string;
 
     @CreateDateColumn()
-    created_at: Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    updated_at: Date;
+    updatedAt: Date;
     
     // Relacion 1:N con Especialidad
-    @ManyToOne(() => Especialidad, especialidad => especialidad.subespecialidades, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    @ManyToOne(() => Especialidad, especialidad => especialidad.subespecialidades)
     especialidad: Especialidad;
 
     // Relacion N:M con Usuario

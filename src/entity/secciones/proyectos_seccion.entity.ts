@@ -32,6 +32,6 @@ export class ProyectosSeccion extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con Seccion
-    @ManyToOne(() => Seccion, seccion => seccion.proyectosSeccion)
+    @ManyToOne(() => Seccion, seccion => seccion.proyectosSeccion, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     seccion: Seccion;
 }

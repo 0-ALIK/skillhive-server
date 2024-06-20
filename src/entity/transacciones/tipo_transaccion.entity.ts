@@ -2,6 +2,13 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, UpdateDateColumn 
 import { Pago } from "./pago.entity";
 import { Ganancia } from "./ganancia.entity";
 
+export enum TipoTransaccionEnum {
+    PAGO_SOLICITUD_COMISION_SERVICIO = 'SCS',
+    COMPRA_ACTIVOS = 'CDA',
+    PAGO_MEMBRESIA = 'PDM',
+    OTRO = 'OTR'
+};
+
 @Entity('tipo_transaccion')
 export class TipoTransaccion extends BaseEntity {
 

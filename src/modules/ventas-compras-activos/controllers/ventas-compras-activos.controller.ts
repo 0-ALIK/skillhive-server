@@ -3,6 +3,8 @@ import { DataSource, Like } from "typeorm";
 import { DatabaseConnectionService } from "../../../services/database-connection";
 import { Activo } from "../../../entity/activos/activos";
 import { Publicacion } from "../../../entity/publicaciones/publicacion.entity";
+import { TipoPublicacionEnum } from "../../../entity/publicaciones/tipo_publicacion.entity";
+import { FileUploadService } from "../../../services/file-upload";
 
 export class VentasComprasActivosController {
 
@@ -95,6 +97,7 @@ export class VentasComprasActivosController {
     public async crearActivo(req: Request, res: Response) {
         const dataSource: DataSource = DatabaseConnectionService.connection;
         const { 
+            portada,
             usuarioAuth,
             titulo,
             descripcion_corta,
@@ -105,16 +108,26 @@ export class VentasComprasActivosController {
 
         try {
 
+            const uploadResult = await FileUploadService.upload(portada);
+
+            if (!uploadResult.correct) {
+                return res.status(500).json({ message: 'Error al subir la portada' });
+            }
+            
             await dataSource.transaction(async transaction => {
 
                 const publicacion = Publicacion.create({
                     titulo,
                     descripcion_corta,
+                    portada: uploadResult.url,
                     usuario: {
                         id: usuarioAuth.id_usuario
                     },
                     subcategorias: subcategoriasIds?.map((id: number) => ({ id })),
-                    subespecialidades: subespecialidadesIds?.map((id: number) => ({ id }))
+                    subespecialidades: subespecialidadesIds?.map((id: number) => ({ id })),
+                    tipo: {
+                        id: TipoPublicacionEnum.ACTIVO
+                    }
                 });
 
                 const publicacionSaved = await transaction.save(publicacion);

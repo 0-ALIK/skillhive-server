@@ -1,12 +1,11 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Seccion } from "./seccion.entity";
+import { Activo } from "./activos";
 
-@Entity('archivos_seccion')
-export class ArchivosSeccion extends BaseEntity {
-
+@Entity()
+export class ActivoArchivos extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
-    
+
     @Column({nullable: false})
     archivo: string;
 
@@ -16,7 +15,7 @@ export class ArchivosSeccion extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    // Relacion M:1 con Seccion
-    @ManyToOne(() => Seccion, seccion => seccion.archivosSeccion, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-    seccion: Seccion;
+    // Relacion 1:M con Activo
+    @ManyToOne(() => Activo, activo => activo.archivos, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    activo: Activo;
 }

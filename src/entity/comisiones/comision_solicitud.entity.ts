@@ -21,25 +21,25 @@ export class ComisionSolicitud extends BaseEntity {
     updatedAt: Date;
 
     // Relacion N:1 con comision
-    @ManyToOne(() => Comision, comision => comision.comisionesSolicitadas)
+    @ManyToOne(() => Comision, comision => comision.comisionesSolicitadas, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     comision: Comision;
 
     // Relacion N:1 con Usuario (Solicitante)
-    @ManyToOne(() => Usuario, usuario => usuario.comisionesSolicitadas)
+    @ManyToOne(() => Usuario, usuario => usuario.comisionesSolicitadas, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion 1:1 con pago
-    @OneToOne(() => Pago, pago => pago.comisionSolicitud)
+    @OneToOne(() => Pago, pago => pago.comisionSolicitud, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     @JoinColumn()
     pago: Pago;
 
     // relacion 1:1 con ganancia
-    @OneToOne(() => Ganancia, ganancia => ganancia.comisionSolicitud)
+    @OneToOne(() => Ganancia, ganancia => ganancia.comisionSolicitud, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     @JoinColumn()
     ganancia: Ganancia;
 
     // Relacion N:1 con ComisionSolicitudEstado
-    @ManyToOne(() => ComisionSolicitudEstado, estado => estado.solicitudes)
+    @ManyToOne(() => ComisionSolicitudEstado, estado => estado.solicitudes, {onDelete: 'SET NULL', onUpdate: 'CASCADE'})
     estado: ComisionSolicitudEstado;
 
     // Relacion 1:N con ComisionSolicitudEntregables

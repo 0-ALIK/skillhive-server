@@ -10,10 +10,10 @@ export class Especialidad extends BaseEntity {
     nombre: string;
 
     @CreateDateColumn()
-    created_at: Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    updated_at: Date;
+    updatedAt: Date;
 
     // Relacion 1:N con Subespecialidad
     @OneToMany(() => Subespecialidad, subespecialidad => subespecialidad.especialidad)

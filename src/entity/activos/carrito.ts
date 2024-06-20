@@ -14,10 +14,10 @@ export class Carrito extends BaseEntity {
     updatedAt: Date;
 
     // Relacion M:1 con Usuario
-    @ManyToOne(() => Usuario, usuario => usuario.carritos)
+    @ManyToOne(() => Usuario, usuario => usuario.carritos, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     usuario: Usuario;
 
     // Relacion M:1 con Activo
-    @ManyToOne(() => Activo, activo => activo.carritos)
+    @ManyToOne(() => Activo, activo => activo.carritos, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     activo: Activo;
 }

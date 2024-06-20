@@ -1,12 +1,15 @@
 import { Router } from "express";
 import { VentasComprasActivosController } from './controllers/ventas-compras-activos.controller';
-import { check } from "express-validator";
+import { Meta, check } from "express-validator";
 import { validarSesion } from "../../middlewares/validar-sesion";
 import { TipoUsuario } from "../../entity/usuarios/usuario.entity";
 import { mostrarErrores } from "../../middlewares/mostrar-errores";
-import { existenSubcategorias, existenSubespecialidades } from "./validators/existe-especialidad-categoria";
+import { existenSubcategorias, existenSubespecialidades } from "../../validators/existe-especialidad-categoria";
 import { filesToBody } from "../../middlewares/files";
-import { validarExtension, validarImagenExtension } from "./validators/validar-extension";
+import { imagenExtensiones, validarExtension } from "../../validators/validar-extension";
+import { parseJsonCampos } from "../../middlewares/parse-json-campos";
+import { UploadedFile } from "express-fileupload";
+import { noTieneRepetidos } from "../../validators/arrays-validators";
 
 export class VentasComprasActivosRoutes {
 
@@ -34,18 +37,23 @@ export class VentasComprasActivosRoutes {
         router.post('/activos', [
             validarSesion(TipoUsuario.FREELANCER),
             filesToBody,
-            check('portada', 'No es un archivo').optional().isObject(),
-            check('portada', 'La portada es requerida').optional().custom( validarImagenExtension ),
+            check('portada', 'No es un archivo').isObject(),
+            check('portada', 'La portada es requerida').custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
+                ...imagenExtensiones
+            ])),
             check('titulo', 'El titulo es requerido').notEmpty(),
             check('descripcion_corta', 'La descripción es requerida').notEmpty(),
             check('precio', ' El precio es requerido').notEmpty(),
             check('precio', 'El precio no es un numero').isNumeric(),
             check('precio', 'El precio no puede ser negativo').isFloat({min: 0}),
+            parseJsonCampos(['subcategoriasIds', 'subespecialidadesIds']),
             check('subcategoriasIds', 'Las subcategorias son requeridas').optional().isArray({min: 1}),
             check('subcategoriasIds.*', 'Las subcategorias deben ser ids').optional().isInt(),
+            check('subcategoriasIds').optional().custom( noTieneRepetidos ),
             check('subcategoriasIds').optional().custom( existenSubcategorias ),
             check('subespecialidadesIds', 'Las subespecialidades son requeridas').optional().isArray({min: 1}),
             check('subespecialidadesIds.*', 'Las subespecialidades deben ser ids').optional().isInt(),
+            check('subespecialidadesIds').optional().custom( noTieneRepetidos ),
             check('subespecialidadesIds').optional().custom( existenSubespecialidades ),
             mostrarErrores
         ], ventasComprasActivosController.crearActivo);

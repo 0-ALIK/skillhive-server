@@ -17,7 +17,7 @@ export class Archivo extends BaseEntity {
     updatedAt: Date;
 
     // relacion 1:1 con Publicacion
-    @OneToOne(() => Publicacion, publicacion => publicacion.archivo)
+    @OneToOne(() => Publicacion, publicacion => publicacion.archivo, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn()
     publicacion: Publicacion;
 }

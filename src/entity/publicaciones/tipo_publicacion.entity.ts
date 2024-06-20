@@ -1,6 +1,13 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Publicacion } from "./publicacion.entity";
 
+export enum TipoPublicacionEnum {
+    ARTICULO = 'ART',
+    ACTIVO = 'ACT',
+    MULTIMEDIOS = 'MUL',
+    EMPLEO = 'EMP'
+};
+
 @Entity('tipo_publicacion')
 export class TipoPublicacion extends BaseEntity {
 
