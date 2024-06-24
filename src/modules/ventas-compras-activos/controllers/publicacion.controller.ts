@@ -188,4 +188,22 @@ export class PublicacionController {
         }
     }
 
+    public async publicarSwitch(req: Request, res: Response) {
+        const { id, action } = req.params;
+        const dataSource = DatabaseConnectionService.connection;
+
+        try {
+            const publicacionUpdated = await dataSource.getRepository(Publicacion).update(Number(id), {
+                publicado: action === 'on'
+            });
+
+            if (publicacionUpdated.affected === 0) {
+                return res.status(404).json({ message: 'No se encontró la publicación' });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al cambiar el estado de publicación' });
+        }
+    }
+
 }

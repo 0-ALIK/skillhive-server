@@ -13,8 +13,8 @@ export class Activo extends BaseEntity {
     @Column({nullable: false, default: false})
     aprobado: boolean;
 
-   /*  @Column({nullable: false, default: false})
-    enRevision: boolean; */
+    @Column({nullable: false, default: false})
+    enRevision: boolean;
 
     @Column({nullable: false, type: 'decimal', precision: 10, scale: 2})
     precio: number;

@@ -67,6 +67,16 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], publicacionController.eliminarSubespecialidad);
 
+        router.put('/publicaciones/:id/publicar-switch/:action', [
+            validarSesion(),
+            check('id', 'El id es requerido').notEmpty(),
+            check('id', 'El id no es un numero').isInt(),
+            check('id').custom( existePublicacionById ),
+            check('action', 'La acción es requerida').notEmpty(),
+            check('action', 'La acción no es válida').isIn(['on', 'off']),
+            mostrarErrores
+        ], publicacionController.publicarSwitch);
+
         // Rutas de activos
 
         router.get('/activos', [
@@ -84,6 +94,16 @@ export class VentasComprasActivosRoutes {
             check('id', 'El id no es un numero').isInt(),
             mostrarErrores
         ],ventasComprasActivosController.obtenerActivoById);
+        
+        router.get('/activos/propios', [
+            validarSesion(TipoUsuario.FREELANCER),
+            check('page', 'La página es requerida').optional().isInt(),
+            check('limit', 'El limite es requerido').optional().isInt(),
+            check('search', 'El texto de busqueda es requerido').optional().isString(),
+            check('publicado', 'El estado de publicación es requerido').optional().isBoolean(),
+            check('en_revision', 'El estado de revisión es requerido').optional().isBoolean(),
+            mostrarErrores
+        ], ventasComprasActivosController.obtenerActivosPropios);
 
         router.post('/activos', [
             validarSesion(TipoUsuario.FREELANCER),
@@ -140,6 +160,17 @@ export class VentasComprasActivosRoutes {
             check('recursosElimiarIds').optional().custom( noTieneRepetidos ),
             mostrarErrores  
         ], ventasComprasActivosController.editarActivo);
+
+        router.put('/activos/:id/a-revision/:action', [
+            validarSesion(TipoUsuario.FREELANCER),
+            check('id', 'El id es requerido').notEmpty(),
+            check('id', 'El id no es un numero').isInt(),
+            check('id').custom( existeActivoById ),
+            check('action', 'La acción es requerida').notEmpty(),
+            check('action', 'La acción no es válida, debe ser enviar o cancelar').isIn(['enviar', 'cancelar']),
+            mostrarErrores
+        ], ventasComprasActivosController.revisionSwitch);
+
 
         return router;
     }

@@ -22,7 +22,10 @@ export class VentasComprasActivosController {
         } = req.query;
 
         const where: any = {
+            enRevision: false,
+            aprobado: true,
             publicacion: {
+                publicado: true,
                 subcategorias: {},
                 subespecialidades: {},
                 usuario: {}
@@ -74,7 +77,10 @@ export class VentasComprasActivosController {
         try {
             const activo = await dataSource.getRepository(Activo).findOne({
                 where: {
-                    id: Number(id)
+                    id: Number(id),
+                    enRevision: false,
+                    aprobado: true,
+                    publicacion: { publicado: true }
                 },
                 relations: {
                     publicacion: {
@@ -283,6 +289,63 @@ export class VentasComprasActivosController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al editar el activo' });   
+        }
+    }
+
+    public async revisionSwitch(req: Request, res: Response) {
+        const dataSource: DataSource = DatabaseConnectionService.connection;
+        const { id, action } = req.params;
+
+        try {
+            const activoUpdated = await dataSource.getRepository(Activo).update(Number(id), {
+                enRevision: action === 'enviar'
+            });
+
+            if (activoUpdated.affected === 0) {
+                return res.status(404).json({ message: 'No se encontró el activo' });
+            }
+
+            res.json({ message: 'Revisión cambiada' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al cambiar el estado de revisión' });
+        }
+    }
+
+    public async obtenerActivosPropios(req: Request, res: Response) {
+        const dataSource: DataSource = DatabaseConnectionService.connection;
+        const { 
+            page = 1,
+            limit = 20,
+            publicado,
+            en_revision,
+        } = req.query;
+        const { usuarioAuth } = req.body;
+
+        try {
+            const activos = await dataSource.getRepository(Activo).find({                
+                take: Number(limit),
+                skip: (Number(page) - 1) * Number(limit),
+                relations: {
+                    publicacion: {
+                        subcategorias: true,
+                        subespecialidades: true,
+                        usuario: true
+                    }
+                },
+                where: {
+                    publicacion: {
+                        usuario: {
+                            id: Number(usuarioAuth.id_usuario)
+                        }
+                    }
+                }
+            });
+
+            res.json(activos);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al obtener los activos' });
         }
     }
     
