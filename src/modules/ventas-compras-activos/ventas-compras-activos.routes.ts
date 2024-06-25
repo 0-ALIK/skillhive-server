@@ -12,6 +12,7 @@ import { UploadedFile } from "express-fileupload";
 import { noTieneRepetidos } from "../../validators/arrays-validators";
 import { PublicacionController } from "./controllers/publicacion.controller";
 import { existeActivoById, existePublicacionById } from "./validators/existe-publicacion";
+import { CarritoController } from "./controllers/carrito.controller";
 
 export class VentasComprasActivosRoutes {
 
@@ -20,6 +21,7 @@ export class VentasComprasActivosRoutes {
 
         const ventasComprasActivosController = new VentasComprasActivosController();
         const publicacionController = new PublicacionController();
+        const carrtioController = new CarritoController();
 
         // Rutas de publicaciones
 
@@ -170,6 +172,28 @@ export class VentasComprasActivosRoutes {
             check('action', 'La acción no es válida, debe ser enviar o cancelar').isIn(['enviar', 'cancelar']),
             mostrarErrores
         ], ventasComprasActivosController.revisionSwitch);
+
+        // Carrito de compras
+
+        router.get('/carrito', [
+            validarSesion(TipoUsuario.FREELANCER),
+        ], carrtioController.obtenerCarrito);
+
+        router.post('/carrito/:activoid', [
+            validarSesion(TipoUsuario.FREELANCER),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoById ),
+            mostrarErrores
+        ], carrtioController.agregarActivo);
+
+        router.delete('/carrito/:activoid', [
+            validarSesion(TipoUsuario.FREELANCER),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoById ),
+            mostrarErrores
+        ], carrtioController.eliminarActivo);
 
 
         return router;
