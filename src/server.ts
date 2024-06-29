@@ -26,7 +26,7 @@ export class Server {
         this.public();
 
         this.app.listen(process.env.PORT || 3000, () => {
-            console.log(`Server is running on port ${process.env.PORT} and host ${process.env.HOST}`);
+            console.log(`El servidor esta corriendo en el puerto ${process.env.PORT} y host ${process.env.HOST}\n-> http://${process.env.HOST}:${process.env.PORT}`);
         });
     }
 

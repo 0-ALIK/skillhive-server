@@ -6,7 +6,7 @@ SkillHive es una plataforma para freelancers y empresas que buscan contratar tal
 
 1. Clonar el repositorio en tu máquina local.
 2. Instalar las dependencias con `npm install`.
-3. Crear un archivo `.env` en la raíz del proyecto con las siguientes variables de entorno:
+3. Crear un archivo con el nombre `.env` en la raíz del proyecto y agregale las siguientes variables de entorno:
 
 ```env
 # server
@@ -43,5 +43,13 @@ PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
 ```
 
-4. Crear una base de datos en MySQL con el nombre `skillhive`.
-5. Ejecutar el proyecto con `npm run dev`.
+4. Enciende la base de datos y asegurate de tener creada la base de datos con el nombre `skillhive`.
+5. Ejecuta la migración de la base de datos con los siguientes comandos:
+    
+    ```bash
+    npm run migration:generate
+    npm run migration:run
+    ```
+
+7. Realiza los inserts que se encuentran en los archivos de la carpeta `src/database/*.sql`.
+8. Finalmente ejecuta el servidor con `npm run dev`.
