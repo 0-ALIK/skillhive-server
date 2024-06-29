@@ -33,12 +33,12 @@ export class DatabaseConnectionService {
                 });
 
                 await DatabaseConnectionService.dataSource.initialize();
-                console.log('Database connected\n\n');
+                console.log('Database connected');
             }
 
             return DatabaseConnectionService.dataSource;
         } catch (error) {
-            console.error('Error connecting to the database\n\n', error);
+            console.error('Error connecting to the database', error);
             throw error;
         }
     }

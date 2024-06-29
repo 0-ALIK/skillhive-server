@@ -11,8 +11,11 @@ import { parseJsonCampos } from "../../middlewares/parse-json-campos";
 import { UploadedFile } from "express-fileupload";
 import { noTieneRepetidos } from "../../validators/arrays-validators";
 import { PublicacionController } from "./controllers/publicacion.controller";
-import { existeActivoById, existePublicacionById } from "./validators/existe-publicacion";
+import { existeActivoById, existeActivoByIdPublic, existePublicacionById } from "./validators/existe-publicacion";
 import { CarritoController } from "./controllers/carrito.controller";
+import { existeEnCarrito } from "./middlewares/activo-carrito";
+import { activoPerteneceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
+import { log } from "../../middlewares/log";
 
 export class VentasComprasActivosRoutes {
 
@@ -25,11 +28,13 @@ export class VentasComprasActivosRoutes {
 
         // Rutas de publicaciones
 
-        router.post('/publicaciones/:id/subcategorias', [
+        router.post('/publicaciones/:publicacionid/subcategorias', [
+            log,
             validarSesion(),
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existePublicacionById ),
+            check('publicacionid', 'El id es requerido').notEmpty(),
+            check('publicacionid', 'El id no es un numero').isInt(),
+            check('publicacionid').custom( existePublicacionById ),
+            publicacionPerteneceUsuario(),
             check('subcategoriasIds', 'Las subcategorias son requeridas').optional().isArray({min: 1}),
             check('subcategoriasIds.*', 'Las subcategorias deben ser ids').optional().isInt(),
             check('subcategoriasIds').optional().custom( noTieneRepetidos ),
@@ -37,21 +42,25 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], publicacionController.agregarSubcategoria);
 
-        router.delete('/publicaciones/:id/:subcatid/subcategorias', [
+        router.delete('/publicaciones/:publicacionid/:subcatid/subcategorias', [
+            log,
             validarSesion(),
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existePublicacionById ),
+            check('publicacionid', 'El id es requerido').notEmpty(),
+            check('publicacionid', 'El id no es un numero').isInt(),
+            check('publicacionid').custom( existePublicacionById ),
+            publicacionPerteneceUsuario(),
             check('subcatid', 'El id de la subcategoria es requerido').notEmpty(),
             check('subcatid', 'El id de la subcategoria no es un numero').isInt(),
             mostrarErrores
         ], publicacionController.eliminarSubcategoria);
 
-        router.post('/publicaciones/:id/subespecialidades', [
+        router.post('/publicaciones/:publicacionid/subespecialidades', [
+            log,
             validarSesion(),
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existePublicacionById ),
+            check('publicacionid', 'El id es requerido').notEmpty(),
+            check('publicacionid', 'El id no es un numero').isInt(),
+            check('publicacionid').custom( existePublicacionById ),
+            publicacionPerteneceUsuario(),
             check('subespecialidadesIds', 'Las subespecialidades son requeridas').optional().isArray({min: 1}),
             check('subespecialidadesIds.*', 'Las subespecialidades deben ser ids').optional().isInt(),
             check('subespecialidadesIds').optional().custom( noTieneRepetidos ),
@@ -59,21 +68,25 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], publicacionController.agregarSubespecialidad);
 
-        router.delete('/publicaciones/:id/:subespid/subespecialidades', [
+        router.delete('/publicaciones/:publicacionid/:subespid/subespecialidades', [
+            log,
             validarSesion(),
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existePublicacionById ),
+            check('publicacionid', 'El id es requerido').notEmpty(),
+            check('publicacionid', 'El id no es un numero').isInt(),
+            check('publicacionid').custom( existePublicacionById ),
+            publicacionPerteneceUsuario(),
             check('subespid', 'El id de la subespecialidad es requerido').notEmpty(),
             check('subespid', 'El id de la subespecialidad no es un numero').isInt(),
             mostrarErrores
         ], publicacionController.eliminarSubespecialidad);
 
-        router.put('/publicaciones/:id/publicar-switch/:action', [
+        router.put('/publicaciones/:publicacionid/publicar-switch/:action', [
+            log,
             validarSesion(),
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existePublicacionById ),
+            check('publicacionid', 'El id es requerido').notEmpty(),
+            check('publicacionid', 'El id no es un numero').isInt(),
+            check('publicacionid').custom( existePublicacionById ),
+            publicacionPerteneceUsuario(),
             check('action', 'La acción es requerida').notEmpty(),
             check('action', 'La acción no es válida').isIn(['on', 'off']),
             mostrarErrores
@@ -82,6 +95,7 @@ export class VentasComprasActivosRoutes {
         // Rutas de activos
 
         router.get('/activos', [
+            log,
             check('page', 'La página es requerida').optional().isInt(),
             check('limit', 'El limite es requerido').optional().isInt(),
             check('search', 'El texto de busqueda es requerido').optional().isString(),
@@ -91,13 +105,16 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], ventasComprasActivosController.obtenerActivos);
 
-        router.get('/activos/:id', [
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
+        router.get('/activos/:activoid', [
+            log,
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoByIdPublic ),
             mostrarErrores
         ],ventasComprasActivosController.obtenerActivoById);
         
-        router.get('/activos/propios', [
+        router.get('/activos/propios/usuario', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
             check('page', 'La página es requerida').optional().isInt(),
             check('limit', 'El limite es requerido').optional().isInt(),
@@ -108,6 +125,7 @@ export class VentasComprasActivosRoutes {
         ], ventasComprasActivosController.obtenerActivosPropios);
 
         router.post('/activos', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
             filesToBody,
             check('portada', 'No es un archivo').isObject(),
@@ -136,12 +154,13 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], ventasComprasActivosController.crearActivo);
 
-        router.put('/activos/:id', [
+        router.put('/activos/:activoid', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
             filesToBody,
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existeActivoById ),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoById ),
             check('portada', 'No es un archivo').optional().isObject(),
             check('portada', 'La portada es requerida').optional().custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
                 ...imagenExtensiones
@@ -163,11 +182,13 @@ export class VentasComprasActivosRoutes {
             mostrarErrores  
         ], ventasComprasActivosController.editarActivo);
 
-        router.put('/activos/:id/a-revision/:action', [
+        router.put('/activos/:activoid/a-revision/:action', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
-            check('id', 'El id es requerido').notEmpty(),
-            check('id', 'El id no es un numero').isInt(),
-            check('id').custom( existeActivoById ),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoById ),
+            activoPerteneceUsuario(),
             check('action', 'La acción es requerida').notEmpty(),
             check('action', 'La acción no es válida, debe ser enviar o cancelar').isIn(['enviar', 'cancelar']),
             mostrarErrores
@@ -176,22 +197,27 @@ export class VentasComprasActivosRoutes {
         // Carrito de compras
 
         router.get('/carrito', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
         ], carrtioController.obtenerCarrito);
 
         router.post('/carrito/:activoid', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
             check('activoid', 'El id es requerido').notEmpty(),
             check('activoid', 'El id no es un numero').isInt(),
-            check('activoid').custom( existeActivoById ),
+            check('activoid').custom( existeActivoByIdPublic ),
+            existeEnCarrito(false),
             mostrarErrores
         ], carrtioController.agregarActivo);
 
         router.delete('/carrito/:activoid', [
+            log,
             validarSesion(TipoUsuario.FREELANCER),
             check('activoid', 'El id es requerido').notEmpty(),
             check('activoid', 'El id no es un numero').isInt(),
-            check('activoid').custom( existeActivoById ),
+            check('activoid').custom( existeActivoByIdPublic ),
+            existeEnCarrito(),
             mostrarErrores
         ], carrtioController.eliminarActivo);
 

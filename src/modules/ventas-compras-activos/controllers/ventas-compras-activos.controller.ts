@@ -72,12 +72,12 @@ export class VentasComprasActivosController {
 
     public async obtenerActivoById(req: Request, res: Response) {
         const dataSource: DataSource = DatabaseConnectionService.connection;
-        const { id } = req.params;
+        const { activoid } = req.params;
 
         try {
             const activo = await dataSource.getRepository(Activo).findOne({
                 where: {
-                    id: Number(id),
+                    id: Number(activoid),
                     enRevision: false,
                     aprobado: true,
                     publicacion: { publicado: true }
@@ -183,7 +183,7 @@ export class VentasComprasActivosController {
 
     public async editarActivo(req: Request, res: Response) {
         const dataSource: DataSource = DatabaseConnectionService.connection;
-        const { id } = req.params;
+        const { activoid } = req.params;
         const { 
             portada,
             recursos = [],
@@ -197,7 +197,7 @@ export class VentasComprasActivosController {
 
             const activo = await dataSource.getRepository(Activo).findOne({
                 where: {
-                    id: Number(id)
+                    id: Number(activoid)
                 },
                 relations: {
                     publicacion: true,
@@ -294,10 +294,10 @@ export class VentasComprasActivosController {
 
     public async revisionSwitch(req: Request, res: Response) {
         const dataSource: DataSource = DatabaseConnectionService.connection;
-        const { id, action } = req.params;
+        const { activoid, action } = req.params;
 
         try {
-            const activoUpdated = await dataSource.getRepository(Activo).update(Number(id), {
+            const activoUpdated = await dataSource.getRepository(Activo).update(Number(activoid), {
                 enRevision: action === 'enviar'
             });
 

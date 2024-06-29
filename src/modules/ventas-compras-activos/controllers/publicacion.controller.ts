@@ -1,19 +1,20 @@
 import { Request, Response } from 'express';
 import { DatabaseConnectionService } from '../../../services/database-connection';
 import { Publicacion } from '../../../entity/publicaciones/publicacion.entity';
+import { TipoPublicacionEnum } from '../../../entity/publicaciones/tipo_publicacion.entity';
 
 export class PublicacionController {
 
     public async agregarSubcategoria(req: Request, res: Response) {
         const dataSource = DatabaseConnectionService.connection;
         const { subcategoriasIds = [] } = req.body;
-        const { id } = req.params;
+        const { publicacionid } = req.params;
 
         try {
 
             const publicacion = await dataSource.getRepository(Publicacion).findOne({
                 where: {
-                    id: Number(id)
+                    id: Number(publicacionid)
                 },
                 relations: {
                     subcategorias: true
@@ -36,7 +37,7 @@ export class PublicacionController {
             let values = '';
 
             subcategoriasIds.forEach((subcategoriaId: number, index: number) => {
-                values += `(${id}, ${subcategoriaId})`;
+                values += `(${publicacionid}, ${subcategoriaId})`;
                 if (index < subcategoriasIds.length - 1) {
                     values += ', ';
                 }
@@ -58,14 +59,13 @@ export class PublicacionController {
 
     public async eliminarSubcategoria(req: Request, res: Response) {
         const dataSource = DatabaseConnectionService.connection;
-        const { subcatid } = req.params;
-        const { id } = req.params;
+        const { publicacionid, subcatid } = req.params;
 
         try {
 
             const publicacion = await dataSource.getRepository(Publicacion).findOne({
                 where: {
-                    id: Number(id)
+                    id: Number(publicacionid)
                 },
                 relations: {
                     subcategorias: true
@@ -85,7 +85,7 @@ export class PublicacionController {
             const queryRunner = dataSource.createQueryRunner();   
             await queryRunner.connect();
 
-            await queryRunner.query('DELETE FROM publicacion_subcategoria WHERE publicacionId = ? AND subcategoriaId = ?', [id, subcatid]);
+            await queryRunner.query('DELETE FROM publicacion_subcategoria WHERE publicacionId = ? AND subcategoriaId = ?', [publicacionid, subcatid]);
 
             await queryRunner.release();
 
@@ -100,13 +100,13 @@ export class PublicacionController {
     public async agregarSubespecialidad(req: Request, res: Response) {
         const dataSource = DatabaseConnectionService.connection;
         const { subespecialidadesIds = [] } = req.body;
-        const { id } = req.params;
+        const { publicacionid } = req.params;
 
         try {
 
             const publicacion = await dataSource.getRepository(Publicacion).findOne({
                 where: {
-                    id: Number(id)
+                    id: Number(publicacionid)
                 },
                 relations: {
                     subespecialidades: true
@@ -129,7 +129,7 @@ export class PublicacionController {
             let values = '';
 
             subespecialidadesIds.forEach((subespecialidadId: number, index: number) => {
-                values += `(${id}, ${subespecialidadId})`;
+                values += `(${publicacionid}, ${subespecialidadId})`;
                 if (index < subespecialidadesIds.length - 1) {
                     values += ', ';
                 }
@@ -149,14 +149,13 @@ export class PublicacionController {
 
     public async eliminarSubespecialidad(req: Request, res: Response) {
         const dataSource = DatabaseConnectionService.connection;
-        const { subespid } = req.params;
-        const { id } = req.params;
+        const { publicacionid, subespid } = req.params;
 
         try {
 
             const publicacion = await dataSource.getRepository(Publicacion).findOne({
                 where: {
-                    id: Number(id)
+                    id: Number(publicacionid)
                 },
                 relations: {
                     subespecialidades: true
@@ -176,7 +175,7 @@ export class PublicacionController {
             const queryRunner = dataSource.createQueryRunner();   
             await queryRunner.connect();
 
-            await queryRunner.query('DELETE FROM publicacion_subespecialidad WHERE publicacionId = ? AND subespecialidadId = ?', [id, subespid]);
+            await queryRunner.query('DELETE FROM publicacion_subespecialidad WHERE publicacionId = ? AND subespecialidadId = ?', [publicacionid, subespid]);
 
             await queryRunner.release();
 
@@ -189,17 +188,31 @@ export class PublicacionController {
     }
 
     public async publicarSwitch(req: Request, res: Response) {
-        const { id, action } = req.params;
+        const { publicacionid, action } = req.params;
         const dataSource = DatabaseConnectionService.connection;
 
         try {
-            const publicacionUpdated = await dataSource.getRepository(Publicacion).update(Number(id), {
+            const publicacion = await dataSource.getRepository(Publicacion).findOneBy({id: Number(publicacionid)});
+
+            if (!publicacion) {
+                return res.status(404).json({ message: 'No se encontró la publicación' });
+            }
+
+            if (publicacion.tipo.tipo === TipoPublicacionEnum.ACTIVO) {
+                if(!publicacion.activo.aprobado) {
+                    return res.status(400).json({ message: 'El activo no ha sido aprobado por el administrador' });
+                }
+            }
+
+            const publicacionUpdated = await dataSource.getRepository(Publicacion).update(Number(publicacionid), {
                 publicado: action === 'on'
             });
 
             if (publicacionUpdated.affected === 0) {
                 return res.status(404).json({ message: 'No se encontró la publicación' });
             }
+
+            res.status(200).json({ message: 'Estado de publicación cambiado correctamente' });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al cambiar el estado de publicación' });

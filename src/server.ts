@@ -16,6 +16,9 @@ export class Server {
      * Inicia el servidor
      */
     public async start(): Promise<void> {
+
+        console.clear();
+        console.log('========== Proceso de inicio del servidor ==========');
         
         await this.databaseConnection();
 
@@ -28,6 +31,7 @@ export class Server {
         this.app.listen(process.env.PORT || 3000, () => {
             console.log(`El servidor esta corriendo en el puerto ${process.env.PORT} y host ${process.env.HOST}\n-> http://${process.env.HOST}:${process.env.PORT}`);
         });
+
     }
 
     /**
