@@ -16,6 +16,7 @@ import { CarritoController } from "./controllers/carrito.controller";
 import { existeEnCarrito } from "./middlewares/activo-carrito";
 import { activoPerteneceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
 import { log } from "../../middlewares/log";
+import { PagarController } from "./controllers/pagar.controller";
 
 export class VentasComprasActivosRoutes {
 
@@ -25,6 +26,7 @@ export class VentasComprasActivosRoutes {
         const ventasComprasActivosController = new VentasComprasActivosController();
         const publicacionController = new PublicacionController();
         const carrtioController = new CarritoController();
+        const pagarController = new PagarController();
 
         // Rutas de publicaciones
 
@@ -221,6 +223,36 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], carrtioController.eliminarActivo);
 
+        // Pagar
+
+        router.post('/pagar/crear-orden/activo/:activoid', [
+            log,
+            validarSesion(),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoByIdPublic ),
+            mostrarErrores
+        ], pagarController.crearOrdenCompraActivo);
+
+        router.post('/pagar/aprobar-orden/activo/:ordenid', [
+            log,
+            validarSesion(),
+            check('ordenid', 'El id es requerido').notEmpty(),
+            mostrarErrores
+        ], pagarController.aporbarOrdenCompraActivo);
+
+        router.post('/pagar/crear-orden/carrito', [
+            log,
+            validarSesion(),
+            mostrarErrores
+        ], pagarController.crearOrdenCarrito);
+
+        router.post('/pagar/pagar-orden/carrito/:ordenid', [
+            log,
+            validarSesion(),
+            check('ordenid', 'El id es requerido').notEmpty(),
+            mostrarErrores
+        ], pagarController.pagarOrdenCarrito);
 
         return router;
     }
