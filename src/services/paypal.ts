@@ -49,8 +49,30 @@ export class PayPalService {
         }
     }
 
-    public static async distribuirPago(vendedores: Vendedor[], comision: number) {
+    public static async aprobarOrden(ordenId: string) {
+        const request = new Paypal.orders.OrdersCaptureRequest(ordenId);
+
+        try {
+            const response = await this.client.execute(request);
+
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw new Error('Error al aprobar la orden de pago');
+        }
+    }
+
+    // TODO: no esta terminado
+    public static async distribuirPago(vendedores: Vendedor[]) {
         const request = new Payouts.payouts.PayoutsPostRequest();
+
+        vendedores = vendedores.map(vendedor => {
+            const comisionVendedor = vendedor.monto * Number(process.env.PAYPAL_COMISION_VENDEDOR || '0.07');
+            return {
+                correo: vendedor.correo,
+                monto: vendedor.monto - comisionVendedor,
+            }
+        });
 
         const items: any[] = vendedores.map(vendedor => ({
             recipient_type: 'EMAIL',

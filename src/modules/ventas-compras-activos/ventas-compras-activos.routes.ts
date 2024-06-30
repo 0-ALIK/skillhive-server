@@ -234,9 +234,12 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], pagarController.crearOrdenCompraActivo);
 
-        router.post('/pagar/aprobar-orden/activo/:ordenid', [
+        router.post('/pagar/aprobar-orden/activo/:activoid/:ordenid', [
             log,
             validarSesion(),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoByIdPublic ),
             check('ordenid', 'El id es requerido').notEmpty(),
             mostrarErrores
         ], pagarController.aporbarOrdenCompraActivo);
