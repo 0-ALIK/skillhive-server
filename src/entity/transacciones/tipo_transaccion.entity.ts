@@ -3,7 +3,7 @@ import { Pago } from "./pago.entity";
 import { Ganancia } from "./ganancia.entity";
 
 export enum TipoTransaccionEnum {
-    PAGO_SOLICITUD_COMISION_SERVICIO = 'SCS',
+    PAGO_SERVICIO = 'SCS',
     COMPRA_ACTIVOS = 'CDA',
     PAGO_MEMBRESIA = 'PDM',
     OTRO = 'OTR'

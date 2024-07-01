@@ -13,7 +13,7 @@ import { noTieneRepetidos } from "../../validators/arrays-validators";
 import { PublicacionController } from "./controllers/publicacion.controller";
 import { existeActivoById, existeActivoByIdPublic, existePublicacionById } from "./validators/existe-publicacion";
 import { CarritoController } from "./controllers/carrito.controller";
-import { existeEnCarrito } from "./middlewares/activo-carrito";
+import { activoYaComprado, carritoEstaVacio, existeEnCarrito } from "./middlewares/activo-carrito";
 import { activoPerteneceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
 import { log } from "../../middlewares/log";
 import { PagarController } from "./controllers/pagar.controller";
@@ -209,6 +209,7 @@ export class VentasComprasActivosRoutes {
             check('activoid', 'El id es requerido').notEmpty(),
             check('activoid', 'El id no es un numero').isInt(),
             check('activoid').custom( existeActivoByIdPublic ),
+            activoYaComprado(true),
             existeEnCarrito(false),
             mostrarErrores
         ], carrtioController.agregarActivo);
@@ -231,6 +232,7 @@ export class VentasComprasActivosRoutes {
             check('activoid', 'El id es requerido').notEmpty(),
             check('activoid', 'El id no es un numero').isInt(),
             check('activoid').custom( existeActivoByIdPublic ),
+            activoYaComprado(true),
             mostrarErrores
         ], pagarController.crearOrdenCompraActivo);
 
@@ -240,6 +242,7 @@ export class VentasComprasActivosRoutes {
             check('activoid', 'El id es requerido').notEmpty(),
             check('activoid', 'El id no es un numero').isInt(),
             check('activoid').custom( existeActivoByIdPublic ),
+            activoYaComprado(true),
             check('ordenid', 'El id es requerido').notEmpty(),
             mostrarErrores
         ], pagarController.aporbarOrdenCompraActivo);
@@ -247,6 +250,7 @@ export class VentasComprasActivosRoutes {
         router.post('/pagar/crear-orden/carrito', [
             log,
             validarSesion(),
+            carritoEstaVacio(true),
             mostrarErrores
         ], pagarController.crearOrdenCarrito);
 
@@ -254,8 +258,11 @@ export class VentasComprasActivosRoutes {
             log,
             validarSesion(),
             check('ordenid', 'El id es requerido').notEmpty(),
+            carritoEstaVacio(true),
             mostrarErrores
         ], pagarController.pagarOrdenCarrito);
+
+        // Comisiones o servicios
 
         return router;
     }

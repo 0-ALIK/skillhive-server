@@ -35,16 +35,16 @@ export class Usuario extends BaseEntity {
     @Column({nullable: false, length: 100})
     nombre: string;
 
-    @Column()
+    @Column({nullable: true})
     foto: string;
 
-    @Column()
+    @Column({nullable: true})
     banner: string;
 
-    @Column()
+    @Column({nullable: true})
     fondo: string;
 
-    @Column()
+    @Column({nullable: true})
     about: string;
 
     @Column({length: 20})

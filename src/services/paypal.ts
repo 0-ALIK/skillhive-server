@@ -67,10 +67,10 @@ export class PayPalService {
         const request = new Payouts.payouts.PayoutsPostRequest();
 
         vendedores = vendedores.map(vendedor => {
-            const comisionVendedor = vendedor.monto * Number(process.env.PAYPAL_COMISION_VENDEDOR || '0.07');
+            const comisionVendedor = vendedor.monto * Number(process.env.COMISSION || '0.07');
             return {
                 correo: vendedor.correo,
-                monto: vendedor.monto - comisionVendedor,
+                monto: Number((vendedor.monto - comisionVendedor).toFixed(2)),
             }
         });
 

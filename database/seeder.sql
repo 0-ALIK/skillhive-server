@@ -13,7 +13,7 @@ INSERT INTO tipo_seccion (id, nombre, `createdAt`, `updatedAt`) VALUES
 
 -- Inserts para tipo_transaccion
 INSERT INTO tipo_transaccion (id, tipo, `createdAt`, `updatedAt`) VALUES
-    ('SCS', 'Pago de solicitud comision/servicio', NOW(), NOW()),
+    ('SCS', 'Pago de servicio', NOW(), NOW()),
     ('CDA', 'Compra de activos', NOW(), NOW()),
     ('PDM', 'Pago de membresia', NOW(), NOW()),
     ('OTR', 'Otro', NOW(), NOW());
