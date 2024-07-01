@@ -17,6 +17,7 @@ import { activoYaComprado, carritoEstaVacio, existeEnCarrito } from "./middlewar
 import { activoPerteneceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
 import { log } from "../../middlewares/log";
 import { PagarController } from "./controllers/pagar.controller";
+import { ComisionesController } from "./controllers/comisiones.controller";
 
 export class VentasComprasActivosRoutes {
 
@@ -27,6 +28,7 @@ export class VentasComprasActivosRoutes {
         const publicacionController = new PublicacionController();
         const carrtioController = new CarritoController();
         const pagarController = new PagarController();
+        const comisionesController = new ComisionesController();
 
         // Rutas de publicaciones
 
