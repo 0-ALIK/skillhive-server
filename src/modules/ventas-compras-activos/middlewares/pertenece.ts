@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { DatabaseConnectionService } from "../../../services/database-connection";
 import { Activo } from "../../../entity/activos/activos";
 import { Publicacion } from "../../../entity/publicaciones/publicacion.entity";
+import { Comision } from "../../../entity/comisiones/comision.entity";
 
 export function activoPerteneceUsuario(pertenece: boolean = true) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -68,3 +69,35 @@ export function publicacionPerteneceUsuario(pertenece: boolean = true) {
         }
     }
 }
+
+export function comisionPerteceUsuario(pertenece: boolean = true) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const { usuarioAuth } = req.body;
+        const { comisionid } = req.params;
+        const dataSource = DatabaseConnectionService.connection;
+
+        try {
+            const comision = await dataSource.getRepository(Comision).findOne({
+                where: {
+                    id: Number(comisionid),
+                    usuario: {
+                        id: Number(usuarioAuth.id_usuario)
+                    }
+                }
+            });
+
+            if (pertenece && !comision) {
+                return res.status(400).json({ message: 'La comisión no pertenece al usuario' });
+            }
+
+            if (!pertenece && comision) {
+                return res.status(400).json({ message: 'La comisión pertenece al usuario' });
+            }
+
+            next();
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Error al verificar si la comisión pertenece al usuario' });
+        }
+    }
+}   

@@ -14,10 +14,11 @@ import { PublicacionController } from "./controllers/publicacion.controller";
 import { existeActivoById, existeActivoByIdPublic, existePublicacionById } from "./validators/existe-publicacion";
 import { CarritoController } from "./controllers/carrito.controller";
 import { activoYaComprado, carritoEstaVacio, existeEnCarrito } from "./middlewares/activo-carrito";
-import { activoPerteneceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
+import { activoPerteneceUsuario, comisionPerteceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
 import { log } from "../../middlewares/log";
 import { PagarController } from "./controllers/pagar.controller";
 import { ComisionesController } from "./controllers/comisiones.controller";
+import { existeComisionById } from "./validators/existe-comision";
 
 export class VentasComprasActivosRoutes {
 
@@ -265,6 +266,81 @@ export class VentasComprasActivosRoutes {
         ], pagarController.pagarOrdenCarrito);
 
         // Comisiones o servicios
+
+        router.get('/comisiones', [
+            log,
+            check('page', 'La página es requerida').optional().isInt(),
+            check('limit', 'El limite es requerido').optional().isInt(),
+            check('search', 'El texto de busqueda es requerido').optional().isString(),
+            check('usuario', 'El usuario debe ser un numero').optional().isInt(),
+            check('subcategoria', 'La subcategoria debe ser un numero').optional().isInt(),
+            mostrarErrores
+        ], comisionesController.obtenerComisiones);
+
+        router.get('/comisiones/:comisionid', [
+            log,
+            check('comisionid', 'El id es requerido').notEmpty(),
+            check('comisionid', 'El id no es un numero').isInt(),
+            mostrarErrores
+        ], comisionesController.obtenerComisionById);
+
+        router.post('/comisiones', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            filesToBody,
+            parseJsonCampos(['subcategoriasIds']),
+            check('imagen', 'No es un archivo').isObject(),
+            check('imagen').custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
+                ...imagenExtensiones
+            ])),
+            check('imagenes_ejemplo', 'Las imagenes de ejemplo son requeridas').optional().isArray(),
+            check('imagenes_ejemplo.*', 'Una de las imagenes de ejemplo no es un archivo').optional().isObject(),
+            check('imagenes_ejemplo.*').optional().custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
+                ...imagenExtensiones
+            ])),
+            check('titulo', 'El titulo es requerido').notEmpty(),
+            check('descripcion', 'La descripción es requerida').notEmpty(),
+            check('precio', ' El precio es requerido').notEmpty(),
+            check('precio', 'El precio no es un numero').isNumeric(),
+            check('precio', 'El precio no puede ser negativo').isFloat({min: 0}),
+            check('subcategoriasIds', 'Las subcategorias son requeridas').optional().isArray({min: 1}),
+            check('subcategoriasIds.*', 'Las subcategorias deben ser ids').optional().isInt(),
+            check('subcategoriasIds').optional().custom( noTieneRepetidos ),
+            check('subcategoriasIds').optional().custom( existenSubcategorias ),
+        ], comisionesController.crearComision);
+
+        router.put('/comisiones/:comisionid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            filesToBody,
+            parseJsonCampos(['subcategoriasIds', 'imagenesEliminarIds']),
+            check('comisionid', 'El id es requerido').notEmpty(),
+            check('comisionid', 'El id no es un numero').isInt(),
+            check('comisionid').custom( existeComisionById ),
+            comisionPerteceUsuario(),
+            check('imagen', 'No es un archivo').optional().isObject(),
+            check('imagen').optional().custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
+                ...imagenExtensiones
+            ])),
+            check('imagenes_ejemplo', 'Las imagenes de ejemplo son requeridas').optional().isArray(),
+            check('imagenes_ejemplo.*', 'Una de las imagenes de ejemplo no es un archivo').optional().isObject(),
+            check('imagenes_ejemplo.*').optional().custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
+                ...imagenExtensiones
+            ])),
+            check('titulo', 'El titulo es requerido').optional().notEmpty(),
+            check('descripcion', 'La descripción es requerida').optional().notEmpty(),
+            check('precio', ' El precio es requerido').optional().notEmpty(),
+            check('precio', 'El precio no es un numero').optional().isNumeric(),
+            check('precio', 'El precio no puede ser negativo').optional().isFloat({min: 0}),
+            check('subcategoriasIds', 'Las subcategorias son requeridas').optional().isArray({min: 1}),
+            check('subcategoriasIds.*', 'Las subcategorias deben ser ids').optional().isInt(),
+            check('subcategoriasIds').optional().custom( noTieneRepetidos ),
+            check('subcategoriasIds').optional().custom( existenSubcategorias ),
+            check('imagenesEliminarIds', 'Los ids de las imagenes a eliminar son requeridas').optional().isArray({min: 1}),
+            check('imagenesEliminarIds.*', 'Los ids de las imagenes a eliminar deben ser numeros').optional().isInt(),
+            check('imagenesEliminarIds').optional().custom( noTieneRepetidos ),
+            mostrarErrores
+        ], comisionesController.actualizarComision);
 
         return router;
     }

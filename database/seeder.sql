@@ -37,3 +37,11 @@ INSERT INTO oferta_empleo_nivel (id, nivel, `createdAt`, `updatedAt`) VALUES
     ('TRA', 'Trainee', NOW(), NOW()),
     ('PAS', 'Pasante', NOW(), NOW()),
     ('VOL', 'Voluntario', NOW(), NOW());
+
+INSERT INTO comision_solicitud_estado (id, estado, `createdAt`, `updatedAt`) VALUES
+    ('PEN', 'Pendiente', NOW(), NOW()),
+    ('ACE', 'Aceptada', NOW(), NOW()),
+    ('PAG', 'Pagada', NOW(), NOW()),
+    ('REC', 'Rechazada', NOW(), NOW()),
+    ('CAN', 'Cancelada', NOW(), NOW()),
+    ('ENT', 'Entregada', NOW(), NOW());
