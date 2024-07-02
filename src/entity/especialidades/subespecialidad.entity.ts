@@ -1,7 +1,7 @@
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, BaseEntity} from 'typeorm';
 import { Especialidad } from './especialidad.entity';
 import { Usuario } from '../usuarios/usuario.entity';
-import { Publicacion } from '../publicaciones/publicacion.entity';
+//import { Publicacion } from '../publicaciones/publicacion.entity';
 
 @Entity()
 export class Subespecialidad extends BaseEntity {
@@ -26,6 +26,6 @@ export class Subespecialidad extends BaseEntity {
     usuarios: Usuario[];
 
     // Relacion N:M con Publicacion
-    @ManyToMany(() => Publicacion, publicacion => publicacion.subespecialidades)
-    publicaciones: Publicacion[];
+    /* @ManyToMany(() => Publicacion, publicacion => publicacion.subespecialidades)
+    publicaciones: Publicacion[]; */
 }
