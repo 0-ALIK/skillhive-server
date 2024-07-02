@@ -47,6 +47,9 @@ export class Usuario extends BaseEntity {
     @Column({nullable: true})
     about: string;
 
+    @Column({nullable: true})
+    paypalEmail: string;
+
     @Column({length: 20})
     telefono: string;
 

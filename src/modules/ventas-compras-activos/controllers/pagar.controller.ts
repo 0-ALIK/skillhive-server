@@ -100,7 +100,7 @@ export class PagarController {
 
                 ordenPayoutsRequest = await PayPalService.distribuirPago([
                     {
-                        correo: activo.publicacion.usuario.correo,
+                        correo: activo.publicacion.usuario.paypalEmail || activo.publicacion.usuario.correo,
                         monto: activo.precio
                     }
                 ]);
@@ -211,7 +211,7 @@ export class PagarController {
                 }
 
                 const items = carrito.map(elemento => ({
-                    correo: elemento.activo.publicacion.usuario.correo,
+                    correo: elemento.activo.publicacion.usuario.paypalEmail || elemento.activo.publicacion.usuario.correo,
                     monto: elemento.activo.precio
                 }));
 
