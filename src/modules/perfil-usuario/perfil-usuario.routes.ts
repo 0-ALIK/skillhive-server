@@ -6,6 +6,7 @@ import { Meta, check } from "express-validator";
 import { imagenExtensiones, validarExtension } from "../../validators/validar-extension";
 import { UploadedFile } from "express-fileupload";
 import { mostrarErrores } from "../../middlewares/mostrar-errores";
+import { filesToBody } from "../../middlewares/files";
 
 export class PerfilUsuarioRoutes {
     public static get routes(): Router {
@@ -16,6 +17,7 @@ export class PerfilUsuarioRoutes {
         router.put('/agregar/foto', [
             log,
             validarSesion(),
+            filesToBody,
             check('foto', 'la foto es requerida').notEmpty(),
             check('foto', 'la foto no es un archivo').isObject(),
             check('foto').custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
@@ -27,6 +29,7 @@ export class PerfilUsuarioRoutes {
         router.put('/agregar/banner', [
             log,
             validarSesion(),
+            filesToBody,
             check('banner', 'el banner es requerido').notEmpty(),
             check('banner', 'el banner no es un archivo').isObject(),
             check('banner').custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [

@@ -31,28 +31,24 @@ export function validarSesion(tipoUsuario: TipoUsuario | null = null, validarCon
                 return res.status(401).json({msg: 'Usuario no confirmado'});
             }
 
-            if(tipoUsuario) {
+            if(tipoUsuario && usuario.tipo !== tipoUsuario) {
+                return res.status(401).json({msg: 'Usuario no autorizado'});
+            }
 
-                if(usuario.tipo !== tipoUsuario) {
-                    return res.status(401).json({msg: 'No tienes permisos para realizar esta acción'});
+            if(usuario.tipo === TipoUsuario.FREELANCER) {
+                const freelancer = await dataSource.getRepository(Freelancer).findOneBy({usuario: {id: usuario.id}});
+                if(!freelancer) {
+                    return res.status(401).json({msg: 'Usuario no encontrado'});
                 }
+                usuarioAuth = formatUsuarioFreelancer(usuario, freelancer); 
 
-                if(tipoUsuario === TipoUsuario.FREELANCER) {
-                    const freelancer = await dataSource.getRepository(Freelancer).findOneBy({usuario: {id: usuario.id}});
-                    if(!freelancer) {
-                        return res.status(401).json({msg: 'Usuario no encontrado'});
-                    }
-                    usuarioAuth = formatUsuarioFreelancer(usuario, freelancer);
+            } else if(usuario.tipo === TipoUsuario.EMPRESA) {
+                const empresa = await dataSource.getRepository(Empresa).findOneBy({usuario: {id: usuario.id}});
+                if(!empresa) {
+                    return res.status(401).json({msg: 'Usuario no encontrado'});
                 }
-
-                if(tipoUsuario === TipoUsuario.EMPRESA) {
-                    const empresa = await dataSource.getRepository(Empresa).findOneBy({usuario: {id: usuario.id}});
-                    if(!empresa) {
-                        return res.status(401).json({msg: 'Usuario no encontrado'});
-                    }
-                    usuarioAuth = formatUsuarioEmpresa(usuario, empresa);
-                }
-
+                usuarioAuth = formatUsuarioEmpresa(usuario, empresa);
+                
             } else {
                 usuarioAuth = formatUsuario(usuario);
             }

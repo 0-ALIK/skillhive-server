@@ -41,7 +41,6 @@ export class VentasComprasActivosRoutes {
             check('search', 'El texto de busqueda es requerido').optional().isString(),
             check('usuario', 'El usuario debe ser un numero').optional().isInt(),
             check('subcategoria', 'La subcategoria debe ser un numero').optional().isInt(),
-            check('subespecialidad', 'La subespecialidad debe ser un numero').optional().isInt(),
             mostrarErrores
         ], ventasComprasActivosController.obtenerActivos);
 
@@ -322,13 +321,13 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], comisionesController.recibirSolicitudComision);
 
-        router.put('/comisiones/cancelar/:comisionid', [
+        router.put('/comisiones/solicitudes/cancelar/:solicitudid', [
             log,
             validarSesion(TipoUsuario.FREELANCER),
-            check('comisionid', 'El id es requerido').notEmpty(),
-            check('comisionid', 'El id no es un numero').isInt(),
-            check('comisionid').custom( existeComisionById ),
-            comisionPerteceUsuario(),
+            check('solicitudid', 'el id de la solicitud es requerido').notEmpty(),
+            check('solicitudid', 'el id de la solicitud no es un numero').isInt(),
+            check('solicitudid').custom( existeSolicitudComisionById ),
+            solicitudComisionPerteneceUsuario(),
             mostrarErrores
         ], comisionesController.cancelarComision);
 

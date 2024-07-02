@@ -17,7 +17,6 @@ export class VentasComprasActivosController {
             limit = 20,
             search,
             subcategoria,
-            subespecialidad,
             usuario
         } = req.query;
 
@@ -27,7 +26,6 @@ export class VentasComprasActivosController {
             publicacion: {
                 publicado: true,
                 subcategorias: {},
-                subespecialidades: {},
                 usuario: {}
             }
         };
@@ -40,16 +38,24 @@ export class VentasComprasActivosController {
             where.publicacion.subcategorias.id = Number(subcategoria);
         }
 
-        if (subespecialidad) {
-            where.publicacion.subespecialidades.id = Number(subespecialidad);
-        }
-
         if (usuario) {
             where.publicacion.usuario.id = Number(usuario);
         }
 
         try {
-            const activos = await dataSource.getRepository(Activo).find({                
+            /* const activos = await dataSource.getRepository(Activo).find({                
+                take: Number(limit),
+                skip: (Number(page) - 1) * Number(limit),
+                relations: {
+                    publicacion: {
+                        subcategorias: true,
+                        usuario: true
+                    }
+                },
+                where: where
+            }); */
+
+            const [activos, total] = await dataSource.getRepository(Activo).findAndCount({
                 take: Number(limit),
                 skip: (Number(page) - 1) * Number(limit),
                 relations: {
@@ -61,7 +67,7 @@ export class VentasComprasActivosController {
                 where: where
             });
 
-            res.json(activos);
+            res.json({ activos, total });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al obtener los activos' });
@@ -313,10 +319,26 @@ export class VentasComprasActivosController {
         const { 
             page = 1,
             limit = 20,
-            publicado,
-            en_revision,
+            publicado = 0,
+            en_revision = 0,
         } = req.query;
         const { usuarioAuth } = req.body;
+
+        const where: any = {
+            publicacion: {
+                usuario: {
+                    id: Number(usuarioAuth.id_usuario)
+                }
+            },
+        };
+
+        if (publicado) {
+            where.publicacion.publicado = true;
+        }
+
+        if (en_revision) {
+            where.enRevision = true;
+        }
 
         try {
             const activos = await dataSource.getRepository(Activo).find({                
@@ -328,13 +350,7 @@ export class VentasComprasActivosController {
                         usuario: true
                     }
                 },
-                where: {
-                    publicacion: {
-                        usuario: {
-                            id: Number(usuarioAuth.id_usuario)
-                        }
-                    }
-                }
+                where
             });
 
             res.json(activos);

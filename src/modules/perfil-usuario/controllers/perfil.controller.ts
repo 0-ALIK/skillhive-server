@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { DatabaseConnectionService } from '../../../services/database-connection';
 import { FileUploadService } from '../../../services/file-upload';
 import { TipoUsuario, Usuario } from '../../../entity/usuarios/usuario.entity';
+import { Freelancer } from '../../../entity/usuarios/freelancer.entity';
 
 export class PerfilController {
 
@@ -62,17 +63,23 @@ export class PerfilController {
         const dataSource = DatabaseConnectionService.connection;
         try {
 
-            const editables: any = {
-                nombre: nombre || usuarioAuth.nombre,
-                telefono: telefono || usuarioAuth.telefono,
-                freelancer: {}
-            };
+            await dataSource.transaction(async transaction => { try {
 
-            if(usuarioAuth.tipo === TipoUsuario.FREELANCER) {
-                editables.freelancer.apellido = apellido || usuarioAuth.freelancer.apellido;
-            }
+                await transaction.update(Usuario, usuarioAuth.id_usuario, { 
+                    nombre: nombre || usuarioAuth.nombre,  
+                    telefono: telefono || usuarioAuth.telefono, 
+                });
 
-            await dataSource.getRepository(Usuario).update(usuarioAuth.id_usuario, editables);
+                if(usuarioAuth.tipo === TipoUsuario.FREELANCER) {
+                    await transaction.update(Freelancer, usuarioAuth.id_freelancer, { 
+                        apellido: apellido || usuarioAuth.apellido, 
+                    });
+                }
+
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }});
 
             res.status(200).send({ message: 'Perfil editado correctamente '});
 

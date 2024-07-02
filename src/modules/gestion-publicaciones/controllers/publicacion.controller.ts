@@ -102,13 +102,16 @@ export class PublicacionController {
         const dataSource = DatabaseConnectionService.connection;
 
         try {
-            const publicacion = await dataSource.getRepository(Publicacion).findOneBy({id: Number(publicacionid)});
+            const publicacion = await dataSource.getRepository(Publicacion).findOne({
+                where: { id: Number(publicacionid) },
+                relations: { tipo: true, activo: true }
+            });
 
             if (!publicacion) {
                 return res.status(404).json({ message: 'No se encontró la publicación' });
             }
 
-            if (publicacion.tipo.tipo === TipoPublicacionEnum.ACTIVO) {
+            if (publicacion.tipo.id === TipoPublicacionEnum.ACTIVO) {
                 if(!publicacion.activo.aprobado) {
                     return res.status(400).json({ message: 'El activo no ha sido aprobado por el administrador' });
                 }

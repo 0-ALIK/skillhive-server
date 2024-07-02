@@ -9,6 +9,7 @@ import { Usuario } from '../../../entity/usuarios/usuario.entity';
 import { ComisionSolicitud } from '../../../entity/comisiones/comision_solicitud.entity';
 import { ComisionSolicitudEstado, ComisionSolicitudEstadoEnum } from '../../../entity/comisiones/comision_solicitud_estado.entity';
 import { ComisionSolicitudEntregables } from '../../../entity/comisiones/comision_solicitud_entregables.entity';
+import { Freelancer } from '../../../entity/usuarios/freelancer.entity';
 
 export class ComisionesController {
 
@@ -268,12 +269,9 @@ export class ComisionesController {
         const dataSource = DatabaseConnectionService.connection;
 
         try {
-        
 
-            await dataSource.getRepository(Usuario).update(usuarioAuth.id_usuario, {
-                freelancer: {
-                    open_comissions: action === 'on' ? true : false
-                }
+            await dataSource.getRepository(Freelancer).update(usuarioAuth.id_freelancer, {
+                open_comissions: action === 'on' ? true : false
             });
 
             res.status(200).json({ message: 'Comisión actualizada correctamente' });
@@ -314,7 +312,7 @@ export class ComisionesController {
                 }
             });
 
-            res.status(200).json({ solicitudesRecibidas });
+            res.status(200).json(solicitudesRecibidas);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al obtener las solicitudes de comisiones' });
