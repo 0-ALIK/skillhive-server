@@ -10,15 +10,16 @@ import { imagenExtensiones, todasLasExtensiones, validarExtension } from "../../
 import { parseJsonCampos } from "../../middlewares/parse-json-campos";
 import { UploadedFile } from "express-fileupload";
 import { noTieneRepetidos } from "../../validators/arrays-validators";
-import { PublicacionController } from "./controllers/publicacion.controller";
-import { existeActivoById, existeActivoByIdPublic, existePublicacionById } from "./validators/existe-publicacion";
+import { existeActivoById, existeActivoByIdPublic } from "./validators/existe-publicacion";
 import { CarritoController } from "./controllers/carrito.controller";
 import { activoYaComprado, carritoEstaVacio, existeEnCarrito } from "./middlewares/activo-carrito";
-import { activoPerteneceUsuario, comisionPerteceUsuario, publicacionPerteneceUsuario } from "./middlewares/pertenece";
+import { activoPerteneceUsuario, comisionPerteceUsuario, solicitudComisionPerteneceUsuario, solicitudComisionPerteneceUsuarioCliente } from "./middlewares/pertenece";
 import { log } from "../../middlewares/log";
 import { PagarController } from "./controllers/pagar.controller";
 import { ComisionesController } from "./controllers/comisiones.controller";
-import { existeComisionById } from "./validators/existe-comision";
+import { existeComisionById, existeSolicitudComisionById } from "./validators/existe-comision";
+import { openComision } from "./middlewares/open-comision";
+import { ComisionesClienteController } from "./controllers/comisiones-cliente";
 
 export class VentasComprasActivosRoutes {
 
@@ -26,76 +27,10 @@ export class VentasComprasActivosRoutes {
         const router = Router();
 
         const ventasComprasActivosController = new VentasComprasActivosController();
-        const publicacionController = new PublicacionController();
         const carrtioController = new CarritoController();
         const pagarController = new PagarController();
         const comisionesController = new ComisionesController();
-
-        // Rutas de publicaciones
-
-        router.post('/publicaciones/:publicacionid/subcategorias', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('subcategoriasIds', 'Las subcategorias son requeridas').optional().isArray({min: 1}),
-            check('subcategoriasIds.*', 'Las subcategorias deben ser ids').optional().isInt(),
-            check('subcategoriasIds').optional().custom( noTieneRepetidos ),
-            check('subcategoriasIds').optional().custom( existenSubcategorias ),
-            mostrarErrores
-        ], publicacionController.agregarSubcategoria);
-
-        router.delete('/publicaciones/:publicacionid/:subcatid/subcategorias', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('subcatid', 'El id de la subcategoria es requerido').notEmpty(),
-            check('subcatid', 'El id de la subcategoria no es un numero').isInt(),
-            mostrarErrores
-        ], publicacionController.eliminarSubcategoria);
-
-        router.post('/publicaciones/:publicacionid/subespecialidades', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('subespecialidadesIds', 'Las subespecialidades son requeridas').optional().isArray({min: 1}),
-            check('subespecialidadesIds.*', 'Las subespecialidades deben ser ids').optional().isInt(),
-            check('subespecialidadesIds').optional().custom( noTieneRepetidos ),
-            check('subespecialidadesIds').optional().custom( existenSubespecialidades ),
-            mostrarErrores
-        ], publicacionController.agregarSubespecialidad);
-
-        router.delete('/publicaciones/:publicacionid/:subespid/subespecialidades', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('subespid', 'El id de la subespecialidad es requerido').notEmpty(),
-            check('subespid', 'El id de la subespecialidad no es un numero').isInt(),
-            mostrarErrores
-        ], publicacionController.eliminarSubespecialidad);
-
-        router.put('/publicaciones/:publicacionid/publicar-switch/:action', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('action', 'La acción es requerida').notEmpty(),
-            check('action', 'La acción no es válida').isIn(['on', 'off']),
-            mostrarErrores
-        ], publicacionController.publicarSwitch);
+        const comisionesClienteController = new ComisionesClienteController();
 
         // Rutas de activos
 
@@ -166,6 +101,7 @@ export class VentasComprasActivosRoutes {
             check('activoid', 'El id es requerido').notEmpty(),
             check('activoid', 'El id no es un numero').isInt(),
             check('activoid').custom( existeActivoById ),
+            activoPerteneceUsuario(),
             check('portada', 'No es un archivo').optional().isObject(),
             check('portada', 'La portada es requerida').optional().custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
                 ...imagenExtensiones
@@ -265,7 +201,7 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], pagarController.pagarOrdenCarrito);
 
-        // Comisiones o servicios
+        // Comisiones o servicios | global
 
         router.get('/comisiones', [
             log,
@@ -281,12 +217,20 @@ export class VentasComprasActivosRoutes {
             log,
             check('comisionid', 'El id es requerido').notEmpty(),
             check('comisionid', 'El id no es un numero').isInt(),
-            mostrarErrores
+            check('comisionid').custom( existeComisionById ),
+            mostrarErrores 
         ], comisionesController.obtenerComisionById);
+
+        router.get('/comisiones/estados/solicitudes', [
+            log,
+        ], comisionesController.obtenerEstados);
+
+        // Comisiones o servicios | vendedor
 
         router.post('/comisiones', [
             log,
             validarSesion(TipoUsuario.FREELANCER),
+            openComision,
             filesToBody,
             parseJsonCampos(['subcategoriasIds']),
             check('imagen', 'No es un archivo').isObject(),
@@ -312,6 +256,7 @@ export class VentasComprasActivosRoutes {
         router.put('/comisiones/:comisionid', [
             log,
             validarSesion(TipoUsuario.FREELANCER),
+            openComision,
             filesToBody,
             parseJsonCampos(['subcategoriasIds', 'imagenesEliminarIds']),
             check('comisionid', 'El id es requerido').notEmpty(),
@@ -341,6 +286,99 @@ export class VentasComprasActivosRoutes {
             check('imagenesEliminarIds').optional().custom( noTieneRepetidos ),
             mostrarErrores
         ], comisionesController.actualizarComision);
+
+        router.put('/comisiones/open-comision-switch/:action', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('action', 'La acción es requerida').notEmpty(),
+            check('action', 'La acción no es válida').isIn(['on', 'off']),
+            mostrarErrores
+        ], comisionesController.openComisionSwitch)
+
+        router.get('/comisiones/solicitudes/recibidas', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('estadoid', 'el estado de las solicitudes no es valido').optional().isString(),
+            check('comisionid', 'el id de comision debe ser numero').optional().isInt(),
+            check('comisionid').optional().custom( existeComisionById ), 
+            mostrarErrores
+        ], comisionesController.obtenerSolictudesComisionesRecibidas);
+
+        router.get('/comisiones/solicitudes/recibidas/:solicitudid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('solicitudid', 'el id de la solicitud es requerido').notEmpty(),
+            check('solicitudid', 'el id de la solicitud no es un numero').isInt(),
+            check('solicitudid').custom( existeSolicitudComisionById ),
+            solicitudComisionPerteneceUsuario(),
+            mostrarErrores
+        ], comisionesController.obtenerSolictudComisionRecibida);
+
+        router.put('/comisiones/solicitudes/recibir/:solicitudid/:action', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('solicitudid', 'el id de la solicitud es requerido').notEmpty(),
+            check('solicitudid', 'el id de la solicitud no es un numero').isInt(),
+            check('solicitudid').custom( existeSolicitudComisionById ),
+            solicitudComisionPerteneceUsuario(),
+            check('action', 'La acción es requerida').notEmpty(),
+            check('action', 'La acción no es válida').isIn(['aceptar', 'rechazar']),
+            mostrarErrores
+        ], comisionesController.recibirSolicitudComision);
+
+        router.put('/comisiones/cancelar/:comisionid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('comisionid', 'El id es requerido').notEmpty(),
+            check('comisionid', 'El id no es un numero').isInt(),
+            check('comisionid').custom( existeComisionById ),
+            comisionPerteceUsuario(),
+            mostrarErrores
+        ], comisionesController.cancelarComision);
+
+        router.post('/comisiones/entregar/:solicitudid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            filesToBody,
+            check('entregables', 'Los entregables son requeridos').isArray({min: 1}),
+            check('entregables.*', 'Uno de los entregables no es archivo').isObject(),
+            check('entregables.*').custom( (archivo: UploadedFile, meta: Meta) => validarExtension(archivo, [
+                ...todasLasExtensiones
+            ])),
+            check('solicitudid', 'El id es requerido').notEmpty(),
+            check('solicitudid', 'El id no es un numero').isInt(),
+            check('solicitudid').custom( existeSolicitudComisionById ),
+            solicitudComisionPerteneceUsuario(),
+            mostrarErrores
+        ], comisionesController.entregarComision);
+
+        // Comisiones o servicios | cliente
+
+        router.get('/c/comisiones/solicitudes', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+        ], comisionesClienteController.obtenerSolicitudes);
+
+        router.get('/c/comisiones/solicitudes/:solicitudid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('solicitudid', 'El id es requerido').notEmpty(),
+            check('solicitudid', 'El id no es un numero').isInt(),
+            check('solicitudid').custom( existeSolicitudComisionById ),
+            solicitudComisionPerteneceUsuarioCliente(),
+            check('solicitudid').custom( existeSolicitudComisionById ),
+            mostrarErrores
+        ], comisionesClienteController.obtenerSolicitud);
+
+        router.post('/c/comisiones/solicitudes/enviar/:comisionid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('comisionid', 'El id es requerido').notEmpty(),
+            check('comisionid', 'El id no es un numero').isInt(),
+            check('comisionid').custom( existeComisionById ),
+            check('descripcion', 'La descripción es requerida').notEmpty(),
+            mostrarErrores
+        ], comisionesClienteController.enviarSolicitud);
 
         return router;
     }

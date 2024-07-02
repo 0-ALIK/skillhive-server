@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { DatabaseConnectionService } from "../../../services/database-connection";
 import { Activo } from "../../../entity/activos/activos";
-import { Publicacion } from "../../../entity/publicaciones/publicacion.entity";
 import { Comision } from "../../../entity/comisiones/comision.entity";
+import { ComisionSolicitud } from "../../../entity/comisiones/comision_solicitud.entity";
 
 export function activoPerteneceUsuario(pertenece: boolean = true) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -38,38 +38,6 @@ export function activoPerteneceUsuario(pertenece: boolean = true) {
     }
 }
 
-export function publicacionPerteneceUsuario(pertenece: boolean = true) {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        const { usuarioAuth } = req.body;
-        const { publicacionid } = req.params;
-        const dataSource = DatabaseConnectionService.connection;
-
-        try {
-            const publicacion = await dataSource.getRepository(Publicacion).findOne({
-                where: {
-                    id: Number(publicacionid),
-                    usuario: {
-                        id: Number(usuarioAuth.id_usuario)
-                    }
-                }
-            });
-
-            if (pertenece && !publicacion) {
-                return res.status(400).json({ message: 'La publicación no pertenece al usuario' });
-            }
-
-            if (!pertenece && publicacion) {
-                return res.status(400).json({ message: 'La publicación pertenece al usuario' });
-            }
-
-            next();
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: 'Error al verificar si la publicación pertenece al usuario' });
-        }
-    }
-}
-
 export function comisionPerteceUsuario(pertenece: boolean = true) {
     return async (req: Request, res: Response, next: NextFunction) => {
         const { usuarioAuth } = req.body;
@@ -101,3 +69,69 @@ export function comisionPerteceUsuario(pertenece: boolean = true) {
         }
     }
 }   
+
+export function solicitudComisionPerteneceUsuario(pertenece: boolean = true) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const { usuarioAuth } = req.body;
+        const { solicitudid } = req.params;
+        const dataSource = DatabaseConnectionService.connection;
+
+        try {
+            const solicitud = await dataSource.getRepository(ComisionSolicitud).findOne({
+                where: {
+                    id: Number(solicitudid),
+                    comision: {
+                        usuario: {
+                            id: Number(usuarioAuth.id_usuario)
+                        }
+                    }
+                }
+            });
+
+            if (pertenece && !solicitud) {
+                return res.status(400).json({ message: 'La solicitud no pertenece al usuario' });
+            }
+
+            if (!pertenece && solicitud) {
+                return res.status(400).json({ message: 'La solicitud pertenece al usuario' });
+            }
+
+            next();
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Error al verificar si la solicitud pertenece al usuario' });
+        }
+    }
+}
+
+export function solicitudComisionPerteneceUsuarioCliente(pertenece: boolean = true) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const { usuarioAuth } = req.body;
+        const { solicitudid } = req.params;
+        const dataSource = DatabaseConnectionService.connection;
+
+        try {
+            const solicitud = await dataSource.getRepository(ComisionSolicitud).findOne({
+                where: {
+                    id: Number(solicitudid),
+                    usuario: {
+                        id: Number(usuarioAuth.id_usuario)
+                    }
+                }
+            });
+
+            if (pertenece && !solicitud) {
+                return res.status(400).json({ message: 'La solicitud no pertenece al usuario' });
+            }
+
+            if (!pertenece && solicitud) {
+                return res.status(400).json({ message: 'La solicitud pertenece al usuario' });
+            }
+
+            next();
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Error al verificar si la solicitud pertenece al usuario' });
+        }
+    }
+}
