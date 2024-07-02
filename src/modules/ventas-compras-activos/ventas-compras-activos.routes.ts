@@ -82,15 +82,11 @@ export class VentasComprasActivosRoutes {
             check('precio', ' El precio es requerido').notEmpty(),
             check('precio', 'El precio no es un numero').isNumeric(),
             check('precio', 'El precio no puede ser negativo').isFloat({min: 0}),
-            parseJsonCampos(['subcategoriasIds', 'subespecialidadesIds']),
+            parseJsonCampos(['subcategoriasIds']),
             check('subcategoriasIds', 'Las subcategorias son requeridas').optional().isArray({min: 1}),
             check('subcategoriasIds.*', 'Las subcategorias deben ser ids').optional().isInt(),
             check('subcategoriasIds').optional().custom( noTieneRepetidos ),
             check('subcategoriasIds').optional().custom( existenSubcategorias ),
-            check('subespecialidadesIds', 'Las subespecialidades son requeridas').optional().isArray({min: 1}),
-            check('subespecialidadesIds.*', 'Las subespecialidades deben ser ids').optional().isInt(),
-            check('subespecialidadesIds').optional().custom( noTieneRepetidos ),
-            check('subespecialidadesIds').optional().custom( existenSubespecialidades ),
             mostrarErrores
         ], ventasComprasActivosController.crearActivo);
 

@@ -4,7 +4,7 @@ import { Like } from "./like.entity";
 import { Comentario } from "./comentario.entity";
 import { TipoPublicacion } from "./tipo_publicacion.entity";
 import { Subcategoria } from "../categorias/subcategoria.entity";
-import { Subespecialidad } from "../especialidades/subespecialidad.entity";
+//import { Subespecialidad } from "../especialidades/subespecialidad.entity";
 import { OfertaEmpleo } from "./oferta_empleo.entity";
 import { Articulo } from "./articulo.entity";
 import { Archivo } from "./archivo.entity";
@@ -56,10 +56,10 @@ export class Publicacion extends BaseEntity {
     subcategorias: Subcategoria[];
 
     // Relacion M:N con subespecialidades
-    @ManyToMany(() => Subespecialidad, subespecialidad => subespecialidad.publicaciones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    /* @ManyToMany(() => Subespecialidad, subespecialidad => subespecialidad.publicaciones, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinTable({name: 'publicacion_subespecialidad'})
     subespecialidades: Subespecialidad[];
-
+ */
     // Relacion 1:1 con OfertaEmpleo
     @OneToOne(() => OfertaEmpleo, ofertaEmpleo => ofertaEmpleo.publicacion)
     ofertaEmpleo: OfertaEmpleo;

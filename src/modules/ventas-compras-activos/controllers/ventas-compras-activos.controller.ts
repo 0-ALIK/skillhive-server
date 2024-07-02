@@ -55,7 +55,6 @@ export class VentasComprasActivosController {
                 relations: {
                     publicacion: {
                         subcategorias: true,
-                        subespecialidades: true,
                         usuario: true
                     }
                 },
@@ -85,7 +84,6 @@ export class VentasComprasActivosController {
                 relations: {
                     publicacion: {
                         subcategorias: true,
-                        subespecialidades: true,
                         usuario: true
                     }
                 }
@@ -112,7 +110,6 @@ export class VentasComprasActivosController {
             descripcion_corta,
             precio,
             subcategoriasIds,
-            subespecialidadesIds
         } = req.body;
 
         try {
@@ -133,7 +130,6 @@ export class VentasComprasActivosController {
                         id: usuarioAuth.id_usuario
                     },
                     subcategorias: subcategoriasIds?.map((id: number) => ({ id })),
-                    subespecialidades: subespecialidadesIds?.map((id: number) => ({ id })),
                     tipo: {
                         id: TipoPublicacionEnum.ACTIVO
                     }
@@ -329,7 +325,6 @@ export class VentasComprasActivosController {
                 relations: {
                     publicacion: {
                         subcategorias: true,
-                        subespecialidades: true,
                         usuario: true
                     }
                 },

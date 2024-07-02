@@ -8,7 +8,7 @@ import { validarSesion } from "../../middlewares/validar-sesion";
 import { publicacionPerteneceUsuario } from "./middlewares/pertenece";
 import { existePublicacionById } from "./validators/existe-publicacion";
 import { noTieneRepetidos } from "../../validators/arrays-validators";
-import { existenSubcategorias, existenSubespecialidades } from "../ventas-compras-activos/validators/existe-especialidad-categoria";
+import { existenSubcategorias } from "../ventas-compras-activos/validators/existe-especialidad-categoria";
 
 export class GestionPublicacionesRoutes {
 
@@ -67,32 +67,6 @@ export class GestionPublicacionesRoutes {
             check('subcatid', 'El id de la subcategoria no es un numero').isInt(),
             mostrarErrores
         ], publicacionController.eliminarSubcategoria);
-
-        router.post('/publicaciones/:publicacionid/subespecialidades', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('subespecialidadesIds', 'Las subespecialidades son requeridas').optional().isArray({min: 1}),
-            check('subespecialidadesIds.*', 'Las subespecialidades deben ser ids').optional().isInt(),
-            check('subespecialidadesIds').optional().custom( noTieneRepetidos ),
-            check('subespecialidadesIds').optional().custom( existenSubespecialidades ),
-            mostrarErrores
-        ], publicacionController.agregarSubespecialidad);
-
-        router.delete('/publicaciones/:publicacionid/:subespid/subespecialidades', [
-            log,
-            validarSesion(),
-            check('publicacionid', 'El id es requerido').notEmpty(),
-            check('publicacionid', 'El id no es un numero').isInt(),
-            check('publicacionid').custom( existePublicacionById ),
-            publicacionPerteneceUsuario(),
-            check('subespid', 'El id de la subespecialidad es requerido').notEmpty(),
-            check('subespid', 'El id de la subespecialidad no es un numero').isInt(),
-            mostrarErrores
-        ], publicacionController.eliminarSubespecialidad);
 
         router.put('/publicaciones/:publicacionid/publicar-switch/:action', [
             log,
