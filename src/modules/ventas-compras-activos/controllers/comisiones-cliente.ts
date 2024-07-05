@@ -10,9 +10,14 @@ export class ComisionesClienteController {
         const dataSource = DatabaseConnectionService.connection;
 
         try {
-            const solicitudes = await dataSource.manager.find(ComisionSolicitud, {
+            const solicitudes = await dataSource.getRepository(ComisionSolicitud).find({
                 where: { usuario: { id: Number(usuarioAuth.id) } },
-                relations: ['comision', 'estado']
+                relations: {
+                    comision: {
+                        usuario: true,
+                    },
+                    estado: true,
+                }
             });
 
             res.status(200).json(solicitudes);
@@ -22,7 +27,30 @@ export class ComisionesClienteController {
         }
     }
 
-    public async obtenerSolicitud(req: Request, res: Response) {}
+    public async obtenerSolicitud(req: Request, res: Response) {
+        const { solicitudid } = req.params;
+        const dataSource = DatabaseConnectionService.connection;
+
+        try {
+            const solicitud = await dataSource.getRepository(ComisionSolicitud).findOne({
+                where: { id: Number(solicitudid) },
+                relations: {
+                    comision: {
+                        usuario: true,
+                        imagenes: true,
+                        subcategorias: true,                       
+                    },
+                    estado: true,
+                    entregables: true,
+                }
+            });
+
+            res.status(200).json(solicitud);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    }
 
     public async enviarSolicitud(req: Request, res: Response) {
         const { usuarioAuth, descripcion } = req.body;
@@ -38,6 +66,8 @@ export class ComisionesClienteController {
             });
 
             await dataSource.manager.save(solicitud);
+
+            
 
             res.status(201).json({ message: 'Solicitud enviada correctamente' });
         } catch (error) {

@@ -21,6 +21,26 @@ interface ConfirmarCorreoData {
     codigo: string;
 }
 
+interface FacturaDataProducto {
+    nombre: string;
+    precio: number;
+}
+
+interface FacturaData {
+    nombre: string;
+    productos?: FacturaDataProducto[];
+    producto?: FacturaDataProducto;
+    total?: number;
+    fecha?: string;
+}
+
+interface NotificacionSolicitud {
+    nombre: string;
+    solicitante: string;
+    descripcion: string;
+    comision: string;
+}
+
 /**
  * Email service
  */
@@ -61,8 +81,89 @@ export class EmailService {
         }
     }
 
+    /**
+     * Enviar correo de confirmación
+     * @param to string
+     * @param subject string
+     * @param replacements ConfirmarCorreoData
+     * @returns Promise<boolean>
+     */
     public static async sendConfirmarCorreo(to: string, subject: string, replacements: ConfirmarCorreoData) {
         const email = fs.readFileSync(path.join(__dirname, '../../emails/confirmar-correo.hbs'), 'utf-8');
+        const template = handlebars.compile(email);
+
+        try {
+            
+            await this.sendEmail({
+                to: to,
+                subject: subject,
+                html: template(replacements)
+            });
+
+            return true;
+
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+
+    /**
+     * Enviar factura individual
+     * @param to string
+     * @param subject string
+     * @param replacements FacturaData
+     * @returns Promise<boolean>
+     */
+    public static async facturaIndividual(to: string, subject: string, replacements: FacturaData) {
+        const email = fs.readFileSync(path.join(__dirname, '../../emails/factura-compra-individual.hbs'), 'utf-8');
+        const template = handlebars.compile(email);
+
+        try {
+            
+            await this.sendEmail({
+                to: to,
+                subject: subject,
+                html: template(replacements)
+            });
+
+            return true;
+
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+
+    /**
+     * Enviar factura múltiple
+     * @param to string
+     * @param subject string
+     * @param replacements FacturaData
+     * @returns Promise<boolean>
+     */
+    public static async facturaMultiple(to: string, subject: string, replacements: FacturaData) {
+        const email = fs.readFileSync(path.join(__dirname, '../../emails/factura-compra-multiple.hbs'), 'utf-8');
+        const template = handlebars.compile(email);
+
+        try {
+            
+            await this.sendEmail({
+                to: to,
+                subject: subject,
+                html: template(replacements)
+            });
+
+            return true;
+
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+
+    public static async notificacionSolicitud(to: string, subject: string, replacements: NotificacionSolicitud) {
+        const email = fs.readFileSync(path.join(__dirname, '../../emails/nueva-solicitud-comision.hbs'), 'utf-8');
         const template = handlebars.compile(email);
 
         try {
