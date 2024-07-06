@@ -6,10 +6,10 @@ INSERT INTO tipo_publicacion (id, tipo, `createdAt`, `updatedAt`) VALUES
     ('EMP', 'Empleo', NOW(), NOW());
 
 -- Inserts para tipo_seccion
-INSERT INTO tipo_seccion (id, nombre, `createdAt`, `updatedAt`) VALUES
-    ('PRO', 'Proyectos', NOW(), NOW()),
-    ('GAL', 'Galeria', NOW(), NOW()),
-    ('TEX', 'Texto', NOW(), NOW());
+INSERT INTO tipo_seccion (id, nombre, esPremium, `createdAt`, `updatedAt`) VALUES
+    ('PRO', 'Proyectos', 0, NOW(), NOW()),
+    ('GAL', 'Galeria', 0, NOW(), NOW()),
+    ('TEX', 'Texto', 0, NOW(), NOW());
 
 -- Inserts para tipo_transaccion
 INSERT INTO tipo_transaccion (id, tipo, `createdAt`, `updatedAt`) VALUES

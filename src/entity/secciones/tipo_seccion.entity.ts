@@ -16,6 +16,9 @@ export class TipoSeccion extends BaseEntity {
     @Column({nullable: false, length: 20})
     nombre: string;
 
+    @Column({nullable: false, default: false})
+    esPremium: boolean;
+
     @CreateDateColumn()
     createdAt: Date;
 

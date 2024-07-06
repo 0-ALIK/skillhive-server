@@ -59,7 +59,7 @@ export class PerfilController {
     }
 
     public async editarPerfil(req: Request, res: Response) {
-        const { usuarioAuth, nombre, apellido, telefono } = req.body;
+        const { usuarioAuth, nombre, apellido, telefono, paypalEmail } = req.body;
         const dataSource = DatabaseConnectionService.connection;
         try {
 
@@ -68,6 +68,7 @@ export class PerfilController {
                 await transaction.update(Usuario, usuarioAuth.id_usuario, { 
                     nombre: nombre || usuarioAuth.nombre,  
                     telefono: telefono || usuarioAuth.telefono, 
+                    paypalEmail: paypalEmail || usuarioAuth.paypalEmail
                 });
 
                 if(usuarioAuth.tipo === TipoUsuario.FREELANCER) {

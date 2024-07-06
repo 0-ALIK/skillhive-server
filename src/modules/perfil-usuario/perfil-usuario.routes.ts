@@ -7,12 +7,19 @@ import { imagenExtensiones, validarExtension } from "../../validators/validar-ex
 import { UploadedFile } from "express-fileupload";
 import { mostrarErrores } from "../../middlewares/mostrar-errores";
 import { filesToBody } from "../../middlewares/files";
+import { SeccionesController } from "./controllers/secciones.controller";
+import { TipoUsuario } from "../../entity/usuarios/usuario.entity";
+import { existeSeccionById } from "./validators/existe-seccion";
+import { seccionPerteneceUsuario } from "./middlewares/pertenece-seccion";
 
 export class PerfilUsuarioRoutes {
     public static get routes(): Router {
         const router = Router();
 
         const perfilController = new PerfilController();
+        const seccionesController = new SeccionesController();
+
+        // Rutas de secciones
 
         router.put('/agregar/foto', [
             log,
@@ -45,9 +52,42 @@ export class PerfilUsuarioRoutes {
             check('apellido', 'el apellido es requerido').optional().notEmpty(),
             check('telefono', 'el telefono es requerido').optional().notEmpty(),
             check('telefono', 'el telefono no es un número').optional().isMobilePhone('es-PA'),
+            check('paypalEmail', 'el correo de paypal es requerido').optional().notEmpty(),
             mostrarErrores
         ], perfilController.editarPerfil);
-        
+
+        // Rutas de secciones
+
+        router.get('/secciones/tipos', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER)
+        ], seccionesController.obtenerTiposSecciones);
+
+        router.get('/secciones/propias', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER)
+        ], seccionesController.obtenerSeccionesPropias);
+
+        router.post('/secciones', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('tipo_seccion', 'el tipo de seccion es requerido').notEmpty(),
+            check('titulo', 'el titulo es requerido').notEmpty(),
+            mostrarErrores
+        ], seccionesController.crearSeccion);
+
+        router.put('/secciones/orden/:seccionid/:direction', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('seccionid', 'el id de la seccion es requerido').notEmpty(),
+            check('seccionid', 'el id de la seccion no es un número').isNumeric(),
+            check('seccionid').custom( existeSeccionById ),
+            seccionPerteneceUsuario(),
+            check('direction', 'la direccion es requerida').notEmpty(),
+            check('direction', 'la direccion no es valida').isIn(['up', 'down']),
+            mostrarErrores
+        ], seccionesController.cambiarOrdenSeccion);
+
         return router;
     }
 }
