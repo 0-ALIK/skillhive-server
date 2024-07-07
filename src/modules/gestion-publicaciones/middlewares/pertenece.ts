@@ -26,6 +26,10 @@ export function publicacionPerteneceUsuario(pertenece: boolean = true) {
                 return res.status(400).json({ message: 'La publicación pertenece al usuario' });
             }
 
+            if(publicacion) {
+                req.body.publicacion = publicacion;            
+            }
+
             next();
         } catch (error) {
             console.log(error);

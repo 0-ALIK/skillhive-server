@@ -17,7 +17,9 @@ export class VentasComprasActivosController {
             limit = 20,
             search,
             subcategoria,
-            usuario
+            usuario,
+            valoracion_orden,
+            fecha_orden = ''
         } = req.query;
 
         const where: any = {
@@ -43,29 +45,39 @@ export class VentasComprasActivosController {
         }
 
         try {
-            /* const activos = await dataSource.getRepository(Activo).find({                
-                take: Number(limit),
-                skip: (Number(page) - 1) * Number(limit),
-                relations: {
-                    publicacion: {
-                        subcategorias: true,
-                        usuario: true
-                    }
-                },
-                where: where
-            }); */
 
-            const [activos, total] = await dataSource.getRepository(Activo).findAndCount({
-                take: Number(limit),
-                skip: (Number(page) - 1) * Number(limit),
+            const activosTodos = await dataSource.getRepository(Activo).find({
                 relations: {
                     publicacion: {
                         subcategorias: true,
-                        usuario: true
+                        usuario: true,
+                        likes: true
                     }
                 },
-                where: where
+                where: where,
+                order: { createdAt: fecha_orden === 'ASC' ? 'ASC' : 'DESC' },
             });
+
+            const activosLikesContados = activosTodos.map(activo => {
+                return {
+                    ...activo,
+                    likes_count: activo.publicacion.likes.length
+                }
+            });
+
+            const activosOrdenados = activosLikesContados.sort((a, b) => {
+                if (valoracion_orden === 'ASC') {
+                    return a.likes_count - b.likes_count;
+                } else if (valoracion_orden === 'DESC') {
+                    return b.likes_count - a.likes_count;
+                } else {
+                    return 0;
+                }
+            });
+
+            const activos = activosOrdenados.slice((Number(page) - 1) * Number(limit), Number(limit));
+
+            const total = activosOrdenados.length;
 
             res.json({ activos, total });
         } catch (error) {

@@ -68,9 +68,9 @@ export class Publicacion extends BaseEntity {
     @OneToOne(() => Articulo, articulo => articulo.publicacion)
     articulo: Articulo;
 
-    // Relacion 1:1 con Archivo
-    @OneToOne(() => Archivo, archivo => archivo.publicacion)
-    archivo: Archivo;
+    // Relacion 1:M con Archivo
+    @OneToMany(() => Archivo, archivo => archivo.publicacion)
+    archivos: Archivo[];
 
     // Relacion 1:1 con Activo
     @OneToOne(() => Activo, activo => activo.publicacion)

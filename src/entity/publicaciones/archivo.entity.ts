@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Publicacion } from "./publicacion.entity";
 
 @Entity()
@@ -16,8 +16,7 @@ export class Archivo extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    // relacion 1:1 con Publicacion
-    @OneToOne(() => Publicacion, publicacion => publicacion.archivo, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-    @JoinColumn()
+    // relacion 1:M con Publicacion
+    @ManyToOne(() => Publicacion, publicacion => publicacion.archivos, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     publicacion: Publicacion;
 }

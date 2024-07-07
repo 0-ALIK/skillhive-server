@@ -41,6 +41,9 @@ export class VentasComprasActivosRoutes {
             check('search', 'El texto de busqueda es requerido').optional().isString(),
             check('usuario', 'El usuario debe ser un numero').optional().isInt(),
             check('subcategoria', 'La subcategoria debe ser un numero').optional().isInt(),
+            check('valoracion_orden', 'El orden de valoración no es válido').optional().isIn(['ASC', 'DESC']),
+            check('fecha_orden', 'El orden es requerido').notEmpty(),
+            check('fecha_orden', 'El orden de fecha no es válido').isIn(['ASC', 'DESC']),
             mostrarErrores
         ], ventasComprasActivosController.obtenerActivos);
 
