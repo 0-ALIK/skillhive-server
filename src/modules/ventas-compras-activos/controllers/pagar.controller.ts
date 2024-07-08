@@ -25,7 +25,7 @@ export class PagarController {
             if (!activo) {
                 return res.status(404).json({ message: 'Activo no encontrado' });
             }
-
+            
             const orden = await PayPalService.crearOrden([
                 {
                     price: activo.precio,

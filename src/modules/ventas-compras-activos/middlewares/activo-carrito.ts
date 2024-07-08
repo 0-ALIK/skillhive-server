@@ -95,6 +95,8 @@ export function activoYaComprado(comprado: boolean = true) {
                 return res.status(400).json({ message: 'El activo no fue comprado' });
             }
 
+            next();
+
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Error al verificar si el activo fue comprado' });
