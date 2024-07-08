@@ -222,4 +222,9 @@ export class AuthController {
             res.status(500).json({ message: 'Error al iniciar sesión' });
         }
     }
+
+    public async validarSesion(req: Request, res: Response) {
+        const { usuarioAuth } = req.body;
+        res.json(usuarioAuth);
+    }
 }

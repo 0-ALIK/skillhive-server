@@ -4,6 +4,7 @@ import { check } from "express-validator";
 import { mostrarErrores } from "../../middlewares/mostrar-errores";
 import { existeEmpresaByRUC, existeFreelancerByCedula, existeUsuarioByEmail } from "./validators/existe-usuario";
 import { validarSesion } from "../../middlewares/validar-sesion";
+import { log } from "../../middlewares/log";
 
 export class AuthRoutes {
 
@@ -13,6 +14,7 @@ export class AuthRoutes {
         const authController = new AuthController();
 
         router.post('/login', [
+            log,
             check('correo', 'El correo es requerido').notEmpty(),
             check('correo', 'El correo no es válido').isEmail(),
             check('password', 'La contraseña es requerida').notEmpty(),
@@ -20,6 +22,7 @@ export class AuthRoutes {
         ], authController.login);
 
         router.post('/registro-freelancer', [
+            log,
             check('correo', 'El correo es requerido').notEmpty(),
             check('correo', 'El correo no es válido').isEmail(),
             check('correo').custom( existeUsuarioByEmail ),
@@ -37,6 +40,7 @@ export class AuthRoutes {
         ], authController.registroFreelancer);
 
         router.post('/registro-empresa', [
+            log,
             check('correo', 'El correo es requerido').notEmpty(),
             check('correo', 'El correo no es válido').isEmail(),
             check('correo').custom( existeUsuarioByEmail ),
@@ -51,10 +55,16 @@ export class AuthRoutes {
         ], authController.registroEmpresa);
 
         router.get('/confirmar-correo/:codigo', [
+            log,
             validarSesion(null, false),
             check('codigo', 'El código de verificación es requerido').notEmpty(),
             mostrarErrores
         ], authController.confirmarCorreo);
+
+        router.get('/validar-sesion', [
+            log,
+            validarSesion()
+        ], authController.validarSesion);
 
         return router;
     }
