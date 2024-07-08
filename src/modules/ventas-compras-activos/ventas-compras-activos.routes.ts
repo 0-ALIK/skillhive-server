@@ -66,6 +66,16 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], ventasComprasActivosController.obtenerActivosPropios);
 
+        router.get('/activos/propios/usuario/:activoid', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+            check('activoid', 'El id es requerido').notEmpty(),
+            check('activoid', 'El id no es un numero').isInt(),
+            check('activoid').custom( existeActivoById ),
+            activoPerteneceUsuario(),
+            mostrarErrores
+        ], ventasComprasActivosController.obtenerActivoPropioById);
+
         router.post('/activos', [
             log,
             validarSesion(TipoUsuario.FREELANCER),

@@ -102,7 +102,8 @@ export class VentasComprasActivosController {
                 relations: {
                     publicacion: {
                         subcategorias: true,
-                        usuario: true
+                        usuario: true,
+                        likes: true
                     }
                 }
             });
@@ -369,6 +370,39 @@ export class VentasComprasActivosController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al obtener los activos' });
+        }
+    }
+
+    public async obtenerActivoPropioById(req: Request, res: Response) {
+        const dataSource: DataSource = DatabaseConnectionService.connection;
+        const { activoid } = req.params;
+        const { usuarioAuth } = req.body;
+
+        try {
+            const activo = await dataSource.getRepository(Activo).findOne({
+                where: {
+                    id: Number(activoid),
+                    publicacion: {
+                        usuario: { id: Number(usuarioAuth.id_usuario) }
+                    }
+                },
+                relations: {
+                    publicacion: {
+                        subcategorias: true,
+                        usuario: true
+                    },
+                    archivos: true
+                }
+            });
+
+            if (!activo) {
+                return res.status(404).json({ message: 'Activo no encontrado' });
+            }
+
+            res.json(activo);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al obtener el activo' });
         }
     }
     
