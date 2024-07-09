@@ -1,4 +1,4 @@
--- Active: 1719770171727@@127.0.0.1@3306@skillhive
+-- Active: 1720443981611@@localhost@3306@skillhive
 -- Inserts para Categoria
 INSERT INTO Categoria (nombre, createdAt, updatedAt) VALUES
     ('Renderizados en 3D', NOW(), NOW()),

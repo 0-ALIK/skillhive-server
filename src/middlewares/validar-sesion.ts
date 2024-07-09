@@ -16,6 +16,9 @@ export function validarSesion(tipoUsuario: TipoUsuario | null = null, validarCon
         if (!token) {
             return res.status(401).json({msg: 'No hay token en la petición'});
         }
+
+        console.log('token', token);
+        
     
         try {
     

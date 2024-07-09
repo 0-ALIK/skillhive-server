@@ -26,12 +26,13 @@ export class PayPalService {
     public static async crearOrden(items: Item[]) {
         const request = new Paypal.orders.OrdersCreateRequest();
 
-        const purchase_units = items.map(item => ({
+        const purchase_units = items.map((item, index) => ({
             amount: {
                 currency_code: 'USD',
                 value: item.price.toString(),
             },
             description: item.description,
+            reference_id: `PU${index + 1}`
         }));
 
         request.requestBody({

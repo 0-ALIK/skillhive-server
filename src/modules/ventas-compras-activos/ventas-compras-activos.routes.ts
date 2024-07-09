@@ -143,6 +143,11 @@ export class VentasComprasActivosRoutes {
             mostrarErrores
         ], ventasComprasActivosController.revisionSwitch);
 
+        router.get('/activos/propios/comprados', [
+            log,
+            validarSesion(TipoUsuario.FREELANCER),
+        ], ventasComprasActivosController.obtenerActivosComprados);
+
         // Carrito de compras
 
         router.get('/carrito', [

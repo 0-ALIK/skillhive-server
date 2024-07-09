@@ -133,6 +133,13 @@ export class PagarController {
                     usuario: {
                         id: Number(usuarioAuth.id_usuario)
                     }
+                },
+                relations: {
+                    activo: {
+                        publicacion: {
+                            usuario: true,
+                        }
+                    }
                 }
             });
 
@@ -163,6 +170,13 @@ export class PagarController {
                     usuario: {
                         id: Number(usuarioAuth.id_usuario)
                     }
+                },
+                relations: {
+                    activo: {
+                        publicacion: {
+                            usuario: true,
+                        }
+                    }
                 }
             });
 
@@ -172,6 +186,15 @@ export class PagarController {
             await dataSource.transaction(async transaction => { try {
 
                 const comprasPromises = carrito.map(async elemento => {
+
+                    const precio = elemento.activo.precio;
+                    const comision = Number(process.env.COMISSION || '0.07');
+
+                    // Validar que precio y comision sean números válidos
+                    if (isNaN(precio) || isNaN(comision)) {
+                        throw new Error('Precio o comisión inválidos');
+                    }
+
                     const pago = Pago.create({
                         usuario: { id: Number(usuarioAuth.id_usuario) },
                         cantidad: elemento.activo.precio,
@@ -182,7 +205,7 @@ export class PagarController {
 
                     const ganancia = Ganancia.create({
                         usuario: { id: elemento.activo.publicacion.usuario.id },
-                        cantidad: (elemento.activo.precio - (elemento.activo.precio * Number(process.env.COMISSION))),
+                        cantidad: (precio - (precio * comision)),
                         tipo: { id: TipoTransaccionEnum.COMPRA_ACTIVOS }
                     });
 

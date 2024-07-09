@@ -17,7 +17,12 @@ export class CarritoController {
                     }
                 },
                 relations: {
-                    activo: true
+                    activo: {
+                        publicacion: {
+                            usuario: true,
+                            tipo: true,
+                        },
+                    }
                 }
             });
 

@@ -7,6 +7,7 @@ import { TipoPublicacionEnum } from "../../../entity/publicaciones/tipo_publicac
 import { FileUploadService } from "../../../services/file-upload";
 import { UploadedFile } from "express-fileupload";
 import { ActivoArchivos } from "../../../entity/activos/activos_archivos";
+import { VentasCompras } from "../../../entity/activos/ventas_compras";
 
 export class VentasComprasActivosController {
 
@@ -57,6 +58,9 @@ export class VentasComprasActivosController {
                 where: where,
                 order: { createdAt: fecha_orden === 'ASC' ? 'ASC' : 'DESC' },
             });
+
+            console.log(activosTodos);
+            
 
             const activosLikesContados = activosTodos.map(activo => {
                 return {
@@ -403,6 +407,33 @@ export class VentasComprasActivosController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al obtener el activo' });
+        }
+    }
+
+    public async obtenerActivosComprados(req: Request, res: Response) {
+        const { usuarioAuth } = req.body;
+        const dataSource: DataSource = DatabaseConnectionService.connection;
+
+        try {
+            const comprador = await dataSource.getRepository(VentasCompras).find({
+                where: {
+                    usuario: {id: Number(usuarioAuth.id_usuario)}
+                },
+                relations: {
+                    activo: {
+                        publicacion: {
+                            subcategorias: true,
+                            usuario: true
+                        },
+                        archivos: true
+                    },
+                }
+            });
+
+            res.json(comprador);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al obtener los activos comprados' });
         }
     }
     
