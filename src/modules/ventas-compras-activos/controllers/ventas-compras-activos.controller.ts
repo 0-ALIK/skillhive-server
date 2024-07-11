@@ -57,10 +57,7 @@ export class VentasComprasActivosController {
                 },
                 where: where,
                 order: { createdAt: fecha_orden === 'ASC' ? 'ASC' : 'DESC' },
-            });
-
-            console.log(activosTodos);
-            
+            });            
 
             const activosLikesContados = activosTodos.map(activo => {
                 return {

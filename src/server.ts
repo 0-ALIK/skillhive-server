@@ -4,6 +4,8 @@ import { DatabaseConnectionService } from './services/database-connection';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import path from 'path';
+import { sanitize } from './middlewares/sanitize';
+import rateLimit from 'express-rate-limit';
 
 export class Server {
 
@@ -62,6 +64,15 @@ export class Server {
         this.app.use(fileUpload({
             useTempFiles: true,
             tempFileDir: '/tmp/'
+        }));
+        // Middleware para sanitizar las peticiones
+        this.app.use(sanitize);
+        
+        // Middleware para limitar las peticiones
+        this.app.use(rateLimit({
+            windowMs: 1 * 60 * 1000, // 1 minuto
+            max: 20, // 100 peticiones,
+            message: 'Has hecho demasiadas peticiones, por favor intenta más tarde.'
         }));
         
         // Middleware para las rutas
